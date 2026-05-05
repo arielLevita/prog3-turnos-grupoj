@@ -1,0 +1,24 @@
+{
+  "name": "turnos_grupoj",
+  "version": "1.0.0",
+  "description": "Aplicación de gestión de turnos del Grupo J",
+  "main": "app.js",
+  "scripts": {
+    "dev": "node --watch --env-file=.env app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arielLevita/prog3-turnos-grupoj.git"
+  },
+  "author": "Levita, Beltramone, Bonnin, Olivares, Roman, Cuesta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arielLevita/prog3-turnos-grupoj/issues"
+  },
+  "homepage": "https://github.com/arielLevita/prog3-turnos-grupoj#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.22.3"
+  }
+}
