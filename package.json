@@ -19,6 +19,8 @@
   "homepage": "https://github.com/arielLevita/prog3-turnos-grupoj#readme",
   "dependencies": {
     "express": "^5.2.1",
+    "express-validator": "^7.3.2",
     "mysql2": "^3.22.3"
-  }
+  },
+  "type": "module"
 }
