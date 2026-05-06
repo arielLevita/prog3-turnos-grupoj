@@ -1,6 +1,6 @@
-import { pool } from './conexion.js';
+import pool from './conexion.js';
 
-export async function testConexion() {
+async function testConexion() {
     try {
         const con = await pool.getConnection();
         console.log("Base de Datos conectada correctamente");
@@ -19,3 +19,5 @@ export async function testConexion() {
         process.exit(1);
     }
 }
+
+export default testConexion;
