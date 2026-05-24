@@ -5,6 +5,8 @@ import { router as v1UsuariosRutas } from "./rutas/v1/usuariosRutas.js";
 import { router as v1MedicosRutas } from "./rutas/v1/medicosRutas.js";
 import { router as v1ReservasRutas } from "./rutas/v1/reservasRutas.js";
 // import { router as v1PacientesRutas } from "./rutas/v1/pacientesRutas.js";
+import { router as v1ObrasSocialesRutas } from "./rutas/v1/obrasSocialesRutas.js";
+// import { router as v1MedicosObrasSocialesRutas } from "./rutas/v1/medicosObrasSocialesRutas.js";
 import { validateContentType } from "./middlewares/validateContentType.js";
 
 const app = express();
@@ -24,6 +26,9 @@ app.use('/api/v1/usuarios', v1UsuariosRutas);
 app.use('/api/v1/medicos', v1MedicosRutas);
 app.use('/api/v1/reservas', v1ReservasRutas);
 // app.use('/api/v1/pacientes', v1PacientesRutas);
+app.use('/api/v1/obrasSociales', v1ObrasSocialesRutas);
+// app.use('/api/v1/medicosObrasSociales', v1MedicosObrasSocialesRutas);
+
 
 
 const PUERTO = process.env.PUERTO || 3007;
