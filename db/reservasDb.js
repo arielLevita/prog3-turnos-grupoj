@@ -2,9 +2,15 @@ import pool from "./conexion.js";
 
 export default class Reservas {
 
-    buscarTodos = async () => {
-        const sql = "SELECT * FROM turnos_reservas WHERE activo = 1";
-        const [reservas] = await pool.query(sql);
+    buscarTurnosPropiosPaciente = async (id) => {
+        const sql = "SELECT * FROM turnos_reservas WHERE activo = 1 AND id_paciente = ?";
+        const [reservas] = await pool.query(sql, [id]);
+        return reservas;
+    }
+
+    buscarTurnosPropiosMedicos = async (id) => {
+        const sql = "SELECT * FROM turnos_reservas WHERE activo = 1 AND id_medico = ?";
+        const [reservas] = await pool.query(sql, [id]);
         return reservas;
     }
 
@@ -20,9 +26,15 @@ export default class Reservas {
         return resultado;
     }
 
-    modificar = async (id, fecha_hora, valor_total, atentido) => {
+    modificar = async (id, fecha_hora, atentido) => {
         const sql = "UPDATE turnos_reservas SET fecha_hora = ?, valor_total = ?, atentido = ? WHERE id_turno_reserva = ?";
-        const [resultado] = await pool.execute(sql, [fecha_hora, valor_total, atentido, id]);
+        const [resultado] = await pool.execute(sql, [fecha_hora, atentido, id]);
+        return resultado;
+    }
+
+    marcarAtendido = async (id, atentido) => {
+        const sql = "UPDATE turnos_reservas SET atentido = ? WHERE id_turno_reserva = ?";
+        const [resultado] = await pool.execute(sql, [atentido, id]);
         return resultado;
     }
 

@@ -5,8 +5,11 @@ export default class ReservasServicio {
         this.reservas = new Reservas();
     }
 
-    buscarTodos = async () => {
-        return await this.reservas.buscarTodos();
+    buscarTurnosPropiosPaciente = async (id) => {
+        return await this.reservas.buscarTurnosPropiosPaciente(id);
+    }
+    buscarTurnosPropiosMedicos = async (id) => {
+        return await this.reservas.buscarTurnosPropiosMedicos(id);
     }
 
     buscarPorId = async (id) => {
@@ -17,8 +20,12 @@ export default class ReservasServicio {
         return await this.reservas.crear(id_medico,id_paciente, id_obra_social, fecha_hora, valor_total, atentido);
     }
 
-    modificar = async (id, fecha_hora, valor_total, atentido) => {
-        return await this.reservas.modificar(id, fecha_hora, valor_total, atentido);
+    modificar = async (id, fecha_hora, atentido) => {
+        return await this.reservas.modificar(id, fecha_hora, atentido);
+    }
+
+    marcarAtendido = async (id, atentido) => {
+        return await this.reservas.marcarAtendido(id, atentido);
     }
 
     borrar = async (id) => {

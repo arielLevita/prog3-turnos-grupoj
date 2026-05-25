@@ -6,7 +6,10 @@ import ReservasControlador from '../../controladores/reservasControlador.js';
 const router = express.Router();
 const reservasControlador = new ReservasControlador();
 
-router.get('/', reservasControlador.buscarTodos);
+router.get('/turnos-paciente', reservasControlador.buscarTurnosPropiosPaciente);
+
+router.get('/turnos-medico', reservasControlador.buscarTurnosPropiosMedicos);
+
 
 router.get('/:id_turno_reserva', [
 
@@ -50,7 +53,7 @@ router.post('/', [
         .notEmpty(),
 
     check('atentido', 'El campo atendido debe ser numérico')
-        .isInt(),
+        .isBoolean(),
 
     validarCampos
 
@@ -64,21 +67,30 @@ router.put('/:id_turno_reserva', [
     check('fecha_hora', 'La fecha y hora es obligatoria')
         .notEmpty(),
 
-    check('valor_total', 'El valor total es obligatorio')
+    check('atentido', 'El campo atendido es obligatorio')
         .notEmpty(),
 
-    check('valor_total', 'El valor total debe ser decimal')
-        .isDecimal(),
+    check('atentido', 'El campo atendido debe ser numérico')
+        .isBoolean(),
+
+    validarCampos
+
+], reservasControlador.modificar);
+
+router.put('/:id_turno_reserva/atendido', [
+
+    param('id_turno_reserva', 'El ID debe ser numérico')
+        .isInt(),
 
     check('atentido', 'El campo atendido es obligatorio')
         .notEmpty(),
 
     check('atentido', 'El campo atendido debe ser numérico')
-        .isInt(),
+        .isBoolean(),
 
     validarCampos
 
-], reservasControlador.modificar);
+], reservasControlador.marcarAtendido);
 
 router.delete('/:id_turno_reserva', [
 
