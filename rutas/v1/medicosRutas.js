@@ -33,6 +33,16 @@ router.post('/', [
 
 ], medicosControlador.crear);
 
+router.post('/:id_medico/obras-sociales', [
+
+    param('id_medico', 'El id del médico es obligatorio').notEmpty(),
+
+    check('obrasSociales', 'La obra social es obligatoria').notEmpty(),
+
+    validarCampos
+
+], medicosControlador.asociarMedicosObrasSociales );
+
 router.put('/:id_medico', [
 
     param('id_medico', 'El ID debe ser numérico').isInt(),

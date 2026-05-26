@@ -77,6 +77,28 @@ export default class MedicosControlador {
         }
     }
 
+    asociarMedicosObrasSociales = async (req, res) => {
+        try {
+            const id_medico = req.params.id_medico;
+            const { obrasSociales } = req.body;
+
+            const relacion = await this.medicos.relacionarConObraSocial(id_medico, obrasSociales);
+
+            if (!relacion) {
+                return res.status(400).json({ estado: false, msg: 'No se crearon las relaciones' });
+            }
+
+            res.status(201).json({ estado: true, msg: 'Relacion creada' });
+
+        } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ estado: false, msg: 'Esos datos ya están en uso' });
+            }
+            console.log(error);
+            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+        }
+    }
+
     borrar = async (req, res) => {
         try {
             const id = req.params.id_medico;

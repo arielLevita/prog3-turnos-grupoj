@@ -21,6 +21,10 @@ export default class MedicosServicio {
         return await this.medicos.modificar(id_usuario, id_especialidad, matricula, descripcion, valor_consulta);
     }
 
+    relacionarConObraSocial = async (id_medico, obrasSociales) => {
+        return await this.medicos.relacionarConObraSocial( id_medico, obrasSociales);
+    }
+
     borrar = async (id) => {
         return await this.medicos.borrar(id);
     }
