@@ -1,0 +1,99 @@
+import EspecialidadesServicio from "../servicios/especialidadesServicio.js";
+
+// El Controlador da la cara. Habla con el cliente (Bruno/Postman), maneja req y res.
+export default class EspecialidadesControlador {
+    constructor() {
+        this.service = new EspecialidadesServicio();
+    }
+
+    buscarTodas = async (req, res) => {
+        // Extraemos las variables de la URL que ya preparó el middleware en las rutas
+        const { filter, limit, offset, order } = req.query;
+
+        try {
+            const especialidades = await this.service.buscarTodas(filter, limit, offset, order);
+            
+            // Si el array de respuesta está vacío, devolvemos 404
+            if (especialidades.length === 0) {
+                return res.status(404).json({ estado: false, msg: 'No hay especialidades registradas' });
+            }
+
+            res.status(200).json({ estado: true, especialidades });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+        }
+    }
+
+    buscarPorId = async (req, res) => {
+        try {
+            const id = req.params.id_especialidad;
+            const especialidad = await this.service.buscarPorId(id);
+
+            // Acá validamos: si especialidad es 'null', devolvemos 404
+            if (!especialidad) {
+                return res.status(404).json({ estado: false, msg: 'Especialidad no encontrada' });
+            }
+            res.status(200).json({ estado: true, especialidad });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+        }
+    }
+
+    crear = async (req, res) => {
+        const especialidad = req.dto; // Usamos el DTO que ya viene limpio de la ruta
+
+        try {
+            const idNuevo = await this.service.crear(especialidad);
+            res.status(201).json({ estado: true, msg: `ID Creado ${idNuevo}` });
+        } catch (error) {
+            // ER_DUP_ENTRY es el código nativo de MySQL cuando se viola una regla UNIQUE
+            if (error.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ estado: false, msg: 'La especialidad ya existe' });
+            }
+            console.error(error);
+            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+        }
+    }
+
+    modificar = async (req, res) => {
+        const id = req.params.id_especialidad;
+        const especialidad = req.dto;
+
+        try {
+            // Doble Chequeo: Verificamos que exista antes de intentar modificarla
+            const existe = await this.service.buscarPorId(id);
+            if (!existe) {
+                return res.status(404).json({ estado: false, msg: 'Especialidad no encontrada' });
+            }
+
+            await this.service.modificar(id, especialidad);
+            res.status(200).json({ estado: true, msg: 'Especialidad modificada' });
+        } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ estado: false, msg: 'Ese nombre de especialidad ya está en uso' });
+            }
+            console.error(error);
+            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+        }
+    }
+
+    borrar = async (req, res) => {
+        const id = req.params.id_especialidad;
+
+        try {
+            // Doble Chequeo
+            const existe = await this.service.buscarPorId(id);
+            if (!existe) {
+                return res.status(404).json({ estado: false, msg: 'Especialidad no encontrada' });
+            }
+
+            await this.service.borrar(id);
+            res.status(200).json({ estado: true, msg: 'Especialidad eliminada' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+        }
+    }
+}
