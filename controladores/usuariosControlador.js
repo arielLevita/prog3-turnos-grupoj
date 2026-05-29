@@ -1,99 +1,73 @@
-import UsuariosServicio from "../servicios/usuariosServicio.js";
+import UsuariosServicio from '../servicios/usuariosServicio.js';
 
 export default class UsuariosControlador {
     constructor() {
-        this.usuarios = new UsuariosServicio();
+        this.servicio = new UsuariosServicio();
     }
 
-    buscarTodos = async (req, res) => {
+    buscarTodas = async (req, res) => {
         try {
-            const usuarios = await this.usuarios.buscarTodos();
-
-            if (usuarios.length === 0) {
-                return res.status(404).json({ estado: false, msg: 'No hay usuarios registrados' });
-            }
-
+            const { filter, limit, offset, order } = req.query;
+            const usuarios = await this.servicio.buscarTodas(filter, limit, offset, order);
             res.status(200).json(usuarios);
         } catch (error) {
-            console.log(`Error en GET /usuarios ${error}`);
-            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+            console.error("Error en buscarTodas (Usuarios):", error);
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 
     buscarPorId = async (req, res) => {
         try {
             const id = req.params.id_usuario;
-            const usuario = await this.usuarios.buscarPorId(id);
-
-            if (usuario.length === 0) {
-                return res.status(404).json({ estado: false, msg: 'Usuario no encontrado' });
+            const usuario = await this.servicio.buscarPorId(id);
+            if (!usuario) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
             }
-
             res.status(200).json(usuario);
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 
     crear = async (req, res) => {
         try {
-            const { nombres, apellido, documento, email, contrasenia, rol, foto } = req.body;
-            const resultado = await this.usuarios.crear(nombres, apellido, documento, email, contrasenia, rol, foto);
-
-            if (resultado.affectedRows > 0) {
-                res.status(201).json({ estado: true, msg: `ID Creado ${resultado.insertId}` });
-            }
+            const idGenerado = await this.servicio.crear(req.dto);
+            res.status(201).json({ estado: true, msg: `Usuario creado con ID ${idGenerado}` });
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
-                return res.status(400).json({ estado: false, msg: 'El usuario ya existe' });
+                return res.status(400).json({ error: 'El documento o email ya se encuentra registrado' });
             }
-            console.log(error);
-            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+            res.status(500).json({ error: 'Error interno del servidor', detalle: error.message });
         }
     }
 
     modificar = async (req, res) => {
         try {
             const id = req.params.id_usuario;
-
-            const existe = await this.usuarios.buscarPorId(id);
-            if (existe.length === 0) {
-                return res.status(404).json({ estado: false, msg: 'Usuario no encontrado' });
+            const idModificado = await this.servicio.modificar(id, req.dto);
+            
+            if (!idModificado) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
             }
-
-            const { nombres } = req.body;
-            const resultado = await this.usuarios.modificar(id, nombres);
-
-            if (resultado.affectedRows > 0) {
-                res.status(200).json({ estado: true, msg: 'Usuario modificado' });
-            }
+            res.status(200).json({ estado: true, msg: 'Usuario modificado con éxito' });
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
-                return res.status(400).json({ estado: false, msg: 'Ese nombre de usuario ya está en uso' });
+                return res.status(400).json({ error: 'El documento o email ya se encuentra registrado' });
             }
-            console.log(error);
-            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+            res.status(500).json({ error: 'Error interno del servidor', detalle: error.message });
         }
     }
 
     borrar = async (req, res) => {
         try {
             const id = req.params.id_usuario;
-
-            const existe = await this.usuarios.buscarPorId(id);
-            if (existe.length === 0) {
-                return res.status(404).json({ estado: false, msg: 'Usuario no encontrado' });
+            const idBorrado = await this.servicio.borrar(id);
+            if (!idBorrado) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
             }
-
-            const resultado = await this.usuarios.borrar(id);
-
-            if (resultado.affectedRows > 0) {
-                res.status(200).json({ estado: true, msg: 'Usuario eliminado' });
-            }
+            res.status(200).json({ estado: true, msg: 'Usuario eliminado (Soft Delete)' });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
-} 
+}
