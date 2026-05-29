@@ -1,27 +1,40 @@
-import Usuarios from "../db/usuariosDb.js";
+import UsuariosDb from '../db/usuariosDb.js';
+import UsuarioResponseDto from '../dtos/usuarioResponseDto.js';
 
 export default class UsuariosServicio {
     constructor() {
-        this.usuarios = new Usuarios();
+        this.db = new UsuariosDb();
     }
 
-    buscarTodos = async () => {
-        return await this.usuarios.buscarTodos();
+    buscarTodas = async (filters, limit, offset, order) => {
+        const usuariosCrud = await this.db.buscarTodas(filters, limit, offset, order);
+        // Transformamos la lista cruda y filtramos las contraseñas usando el DTO
+        return usuariosCrud.map(usuario => new UsuarioResponseDto(usuario));
     }
 
     buscarPorId = async (id) => {
-        return await this.usuarios.buscarPorId(id);
+        const usuario = await this.db.buscarPorId(id);
+        if (!usuario) return null;
+        return new UsuarioResponseDto(usuario);
     }
 
-    crear = async (nombres, apellido, documento, email, contrasenia, rol, foto) => {
-        return await this.usuarios.crear(nombres, apellido, documento, email, contrasenia, rol, foto);
+    crear = async (usuarioCreateDto) => {
+        return await this.db.crear(usuarioCreateDto);
     }
 
-    modificar = async (id, nombres) => {
-        return await this.usuarios.modificar(id, nombres);
+    modificar = async (id, usuarioCreateDto) => {
+        const existe = await this.db.buscarPorId(id);
+        if (!existe) return null;
+
+        await this.db.modificar(id, usuarioCreateDto);
+        return id;
     }
 
     borrar = async (id) => {
-        return await this.usuarios.borrar(id);
+        const existe = await this.db.buscarPorId(id);
+        if (!existe) return null;
+
+        await this.db.borrar(id);
+        return id;
     }
-} 
+}

@@ -1,34 +1,81 @@
 import pool from "./conexion.js";
 
-export default class Usuarios {
+export default class UsuariosDb {
+    
+    buscarTodas = async (filters = null, limit = 0, offset = 0, order = null) => {
+        let strSql = `SELECT id_usuario, documento, apellido, nombres, email, foto_path, rol 
+                      FROM usuarios 
+                      WHERE activo = 1 `;
+        const filterValuesArray = [];
 
-    buscarTodos = async () => {
-        const sql = "SELECT * FROM usuarios WHERE activo = 1";
-        const [usuarios] = await pool.query(sql);
-        return usuarios;
+        if (filters) {
+            strSql += "AND ";
+            for (const clave of Object.keys(filters)) {
+                if (clave === 'apellido' || clave === 'nombres' || clave === 'email') {
+                    strSql += `${clave} LIKE ? AND `;
+                    filterValuesArray.push(`%${filters[clave]}%`);
+                } else {
+                    // Para documento y rol, búsqueda exacta
+                    strSql += `${clave} = ? AND `;
+                    filterValuesArray.push(filters[clave]);
+                }
+            }
+            strSql = strSql.substring(0, strSql.length - 5);
+        }
+
+        if (order) {
+            for (const clave of Object.keys(order)) {
+                strSql += ` ORDER BY ${clave} ${order[clave]} `;
+            }
+        }
+
+        if (limit) {
+            strSql += 'LIMIT ? OFFSET ? ';
+            filterValuesArray.push(limit, offset);
+        }
+
+        const [rows] = await pool.query(strSql, filterValuesArray);
+        return rows;
     }
 
     buscarPorId = async (id) => {
-        const sql = "SELECT * FROM usuarios WHERE activo = 1 AND id_usuario = ?";
-        const [usuarios] = await pool.execute(sql, [id]);
-        return usuarios;
+        const strSql = `SELECT id_usuario, documento, apellido, nombres, email, foto_path, rol 
+                        FROM usuarios 
+                        WHERE activo = 1 AND id_usuario = ?`;
+        const [rows] = await pool.execute(strSql, [id]);
+        return (rows.length > 0) ? rows[0] : null;
     }
 
-    crear = async (nombres, apellido, documento, email, contrasenia, rol, foto) => {
-        const sql = "INSERT INTO usuarios (nombres, apellido, documento, email, contrasenia, rol, foto_path) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        const [resultado] = await pool.execute(sql, [nombres, apellido, documento, email, contrasenia, rol, foto]);
-        return resultado;
+    crear = async ({ documento, apellido, nombres, email, contrasenia, fotoPath, rol }) => {
+        const strSql = `INSERT INTO usuarios (documento, apellido, nombres, email, contrasenia, foto_path, rol) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        const [resultado] = await pool.execute(strSql, [documento, apellido, nombres, email, contrasenia, fotoPath, rol]);
+        return resultado.insertId;
     }
 
-    modificar = async (id, nombre) => {
-        const sql = "UPDATE usuarios SET nombre = ? WHERE id_usuario = ?";
-        const [resultado] = await pool.execute(sql, [nombre, id]);
-        return resultado;
+    modificar = async (id, { documento, apellido, nombres, email, contrasenia, fotoPath, rol }) => {
+        // Si mandaron una contraseña nueva, la actualizamos. Si no, dejamos la que estaba.
+        let strSql = "";
+        let values = [];
+
+        if (contrasenia) {
+            strSql = `UPDATE usuarios 
+                      SET documento = ?, apellido = ?, nombres = ?, email = ?, contrasenia = ?, foto_path = ?, rol = ? 
+                      WHERE id_usuario = ?`;
+            values = [documento, apellido, nombres, email, contrasenia, fotoPath, rol, id];
+        } else {
+            strSql = `UPDATE usuarios 
+                      SET documento = ?, apellido = ?, nombres = ?, email = ?, foto_path = ?, rol = ? 
+                      WHERE id_usuario = ?`;
+            values = [documento, apellido, nombres, email, fotoPath, rol, id];
+        }
+        
+        await pool.execute(strSql, values);
+        return id;
     }
 
     borrar = async (id) => {
-        const sql = "UPDATE usuarios SET activo = 0 WHERE id_usuario = ?";
-        const [resultado] = await pool.execute(sql, [id]);
-        return resultado;
+        const strSql = "UPDATE usuarios SET activo = 0 WHERE id_usuario = ?";
+        await pool.execute(strSql, [id]);
     }
-} 
+}

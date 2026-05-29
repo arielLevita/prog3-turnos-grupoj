@@ -1,79 +1,60 @@
-import MedicosServicio from "../servicios/medicosServicio.js";
+import MedicosServicio from '../servicios/medicosServicio.js';
 
 export default class MedicosControlador {
     constructor() {
-        this.medicos = new MedicosServicio();
+        this.servicio = new MedicosServicio();
     }
 
-    buscarTodos = async (req, res) => {
+    buscarTodas = async (req, res) => {
         try {
-            const medicos = await this.medicos.buscarTodos();
-
-            if (medicos.length === 0) {
-                return res.status(404).json({ estado: false, msg: 'No hay medicos registrados' });
-            }
-
+            const { filter, limit, offset, order } = req.query;
+            const medicos = await this.servicio.buscarTodas(filter, limit, offset, order);
             res.status(200).json(medicos);
         } catch (error) {
-            console.log(`Error en GET /medicos ${error}`);
-            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+            console.error("Error en buscarTodas (Médicos):", error);
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 
     buscarPorId = async (req, res) => {
         try {
             const id = req.params.id_medico;
-            const medico = await this.medicos.buscarPorId(id);
-
-            if (medico.length === 0) {
-                return res.status(404).json({ estado: false, msg: 'Medico no encontrado' });
+            const medico = await this.servicio.buscarPorId(id);
+            if (!medico) {
+                return res.status(404).json({ error: 'Médico no encontrado' });
             }
-
             res.status(200).json(medico);
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 
     crear = async (req, res) => {
         try {
-            const { id_usuario, id_especialidad, matricula, descripcion, valor_consulta } = req.body;
-            const resultado = await this.medicos.crear(id_usuario, id_especialidad, matricula, descripcion, valor_consulta);
-
-            if (resultado.affectedRows > 0) {
-                res.status(201).json({ estado: true, msg: `ID Creado ${resultado.insertId}` });
-            }
+            const idGenerado = await this.servicio.crear(req.dto);
+            res.status(201).json({ estado: true, msg: `Médico registrado con ID ${idGenerado}` });
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
-                return res.status(400).json({ estado: false, msg: 'El medico ya existe' });
+                return res.status(400).json({ error: 'La matrícula ya se encuentra registrada a otro médico' });
             }
-            console.log(error);
-            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+            res.status(500).json({ error: 'Error interno del servidor', detalle: error.message });
         }
     }
 
     modificar = async (req, res) => {
         try {
             const id = req.params.id_medico;
-
-            const existe = await this.medicos.buscarPorId(id);
-            if (existe.length === 0) {
-                return res.status(404).json({ estado: false, msg: 'Medico no encontrado' });
+            const idModificado = await this.servicio.modificar(id, req.dto);
+            
+            if (!idModificado) {
+                return res.status(404).json({ error: 'Médico no encontrado' });
             }
-
-            const { matricula, descripcion, valor_consulta } = req.body;
-            const resultado = await this.medicos.modificar(id, matricula, descripcion, valor_consulta);
-
-            if (resultado.affectedRows > 0) {
-                res.status(200).json({ estado: true, msg: 'Modificacion realizada' });
-            }
+            res.status(200).json({ estado: true, msg: 'Datos del médico modificados con éxito' });
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
-                return res.status(400).json({ estado: false, msg: 'Esos datos ya están en uso' });
+                return res.status(400).json({ error: 'La matrícula ya se encuentra registrada a otro médico' });
             }
-            console.log(error);
-            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+            res.status(500).json({ error: 'Error interno del servidor', detalle: error.message });
         }
     }
 
@@ -102,22 +83,17 @@ export default class MedicosControlador {
     borrar = async (req, res) => {
         try {
             const id = req.params.id_medico;
-
-            const existe = await this.medicos.buscarPorId(id);
-            if (existe.length === 0) {
-                return res.status(404).json({ estado: false, msg: 'Medico no encontrado' });
+            const idBorrado = await this.servicio.borrar(id);
+            if (!idBorrado) {
+                return res.status(404).json({ error: 'Médico no encontrado' });
             }
-
-            const id_usuario = existe[0].id_usuario;
-
-            const resultado = await this.medicos.borrar(id_usuario);
-
-            if (resultado.affectedRows > 0) {
-                res.status(200).json({ estado: true, msg: 'Medico eliminado' });
-            }
+            res.status(200).json({ estado: true, msg: 'Médico eliminado lógicamente (Usuario desactivado)' });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
-} 
+}
+
+   
+
+   

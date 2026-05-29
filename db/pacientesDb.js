@@ -1,34 +1,71 @@
 import pool from "./conexion.js";
 
-export default class Pacientes {
+export default class PacientesDb {
+    
+    // Lista todos los pacientes usando la vista para traer datos completos de la persona
+    buscarTodas = async (filters = null, limit = 0, offset = 0, order = null) => {
+        let strSql = `SELECT id_paciente, id_usuario, id_obra_social, apellido, nombres, email, descripcion_obra_social, foto_path 
+                      FROM v_pacientes 
+                      WHERE 1=1 `;
+        const filterValuesArray = [];
 
-    buscarTodos = async () => {
-        const sql = "SELECT * FROM pacientes";
-        const [pacientes] = await pool.query(sql);
-        return pacientes;
+        if (filters) {
+            strSql += "AND ";
+            for (const clave of Object.keys(filters)) {
+                if (clave === 'apellido' || clave === 'nombres' || clave === 'email') {
+                    strSql += `${clave} LIKE ? AND `;
+                    filterValuesArray.push(`%${filters[clave]}%`);
+                } else {
+                    strSql += `${clave} = ? AND `;
+                    filterValuesArray.push(filters[clave]);
+                }
+            }
+            strSql = strSql.substring(0, strSql.length - 5);
+        }
+
+        if (order) {
+            for (const clave of Object.keys(order)) {
+                strSql += ` ORDER BY ${clave} ${order[clave]} `;
+            }
+        }
+
+        if (limit) {
+            strSql += 'LIMIT ? OFFSET ? ';
+            filterValuesArray.push(limit, offset);
+        }
+
+        const [rows] = await pool.query(strSql, filterValuesArray);
+        return rows;
     }
 
+    // Busca un paciente específico a través de la vista
     buscarPorId = async (id) => {
-        const sql = "SELECT * FROM pacientes WHERE id_paciente = ?";
-        const [pacientes] = await pool.execute(sql, [id]);
-        return pacientes;
+        const strSql = `SELECT id_paciente, id_usuario, id_obra_social, apellido, nombres, email, descripcion_obra_social, foto_path 
+                        FROM v_pacientes 
+                        WHERE id_paciente = ?`;
+        const [rows] = await pool.execute(strSql, [id]);
+        return (rows.length > 0) ? rows[0] : null;
     }
 
-    crear = async (id_usuario, id_obra_social) => {
-        const sql = "INSERT INTO pacientes (id_usuario, id_obra_social) VALUES (?, ?)";
-        const [resultado] = await pool.execute(sql, [id_usuario, id_obra_social]);
-        return resultado;
+    // Inserta una nueva relación en la tabla física
+    crear = async ({ idUsuario, idObraSocial }) => {
+        const strSql = `INSERT INTO pacientes (id_usuario, id_obra_social) VALUES (?, ?)`;
+        const [resultado] = await pool.execute(strSql, [idUsuario, idObraSocial]);
+        return resultado.insertId;
     }
 
-    modificar = async (id, id_usuario, id_obra_social) => {
-        const sql = "UPDATE pacientes SET id_usuario = ?, id_obra_social = ? WHERE id_paciente = ?";
-        const [resultado] = await pool.execute(sql, [id_usuario, id_obra_social, id]);
-        return resultado;
+    // Actualiza la obra social o el usuario vinculado
+    modificar = async (id, { idUsuario, idObraSocial }) => {
+        const strSql = `UPDATE pacientes SET id_usuario = ?, id_obra_social = ? WHERE id_paciente = ?`;
+        await pool.execute(strSql, [idUsuario, idObraSocial, id]);
+        return id;
     }
 
-    borrar = async (id_usuario) => {
-        const sql = "UPDATE usuarios SET activo = 0 WHERE id_usuario = ?";
-        const [resultado] = await pool.execute(sql, [id_usuario]);
-        return resultado;
+    // Soft Delete: Desactiva el registro de la tabla usuarios para mantener integridad de la vista
+    borrar = async (id) => {
+        const strSql = `UPDATE usuarios 
+                        SET activo = 0 
+                        WHERE id_usuario = (SELECT id_usuario FROM pacientes WHERE id_paciente = ?)`;
+        await pool.execute(strSql, [id]);
     }
-} 
+}
