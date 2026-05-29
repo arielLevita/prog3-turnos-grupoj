@@ -76,28 +76,49 @@ export default class MedicosDb {
         return rows;
     }
 
-    relacionarConObraSocial = async (id_medico, obras_sociales) => {
+    // ============================================================================
+    // 📍 Métodos Auxiliares para la Relación Médico - Obra Social
+    // ============================================================================
+    
+    // Busca los IDs de las obras sociales que YA tiene asignadas este médico
+    buscarAsociacionesPorMedico = async (id_medico) => {
+        const strSql = `SELECT id_obra_social 
+                        FROM medicos_obras_sociales 
+                        WHERE id_medico = ? AND activo = 1`;
+        const [rows] = await pool.query(strSql, [id_medico]);
+        // Convertimos el array de objetos en un array simple de números: [1, 2, 4]
+        return rows.map(row => row.id_obra_social);
+    }
+
+    // Transacción que inserta las asociaciones
+    asociarMultiples = async (id_medico, obras_sociales_ids) => {
         const conexion = await pool.getConnection();
         try {
             await conexion.beginTransaction();
 
-            for(const os of obras_sociales){
-                const sql = "INSERT INTO medicos_obras_sociales (id_medico, id_obra_social) VALUES (?, ?);"
-                await conexion.execute(sql, [id_medico, os.id_obra_social]);
-
+            for (const id_obra_social of obras_sociales_ids) {
+                const sql = `INSERT INTO medicos_obras_sociales (id_medico, id_obra_social) VALUES (?, ?);`
+                await conexion.execute(sql, [id_medico, id_obra_social]);
             }
 
             await conexion.commit();
-            conexion.release();
             return true;
-            
         } catch (error) {
             await conexion.rollback();
+            console.error("Error en transacción asociarMultiples:", error);
+            throw error; 
+        } finally {
             conexion.release();
-            console.log(error);
-            return false;
-            
         }
+    }
+
+    // Desactiva (Soft Delete) una asociación específica entre un médico y una obra social
+    desasociarObraSocial = async (id_medico, id_obra_social) => {
+        const strSql = `UPDATE medicos_obras_sociales 
+                        SET activo = 0 
+                        WHERE id_medico = ? AND id_obra_social = ?`;
+        await pool.execute(strSql, [id_medico, id_obra_social]);
+        return true;
     }
 
     borrar = async (id) => {

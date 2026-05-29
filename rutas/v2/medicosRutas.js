@@ -153,24 +153,17 @@ router.post("/",
     controller.crear.bind(controller)
 );
 
-// router.post('/:id_medico/obras-sociales', [
-
-//     validatePayload, transformDTO
-
-// ], controller.asociarMedicosObrasSociales.bind(controller) );
-
 router.post('/:id_medico/obras-sociales', [
-
-    param('id_medico').isInt(),
-
-    body('obrasSociales').isArray({ min: 1 }),
-
-    body('obrasSociales.*.id_obra_social')
-        .isInt(),
-
+    param('id_medico').isInt().withMessage('El ID del médico debe ser un número entero'),
+    body('obras_sociales').isArray({ min: 1 }).withMessage('Debe enviar un array de obras sociales'),
     validarCampos
+], controller.asociarObrasSociales.bind(controller));
 
-], controller.asociarMedicosObrasSociales.bind(controller));
+router.delete('/:id_medico/obras-sociales/:id_obra_social', [
+    param('id_medico').isInt().withMessage('El ID del médico debe ser un número entero'),
+    param('id_obra_social').isInt().withMessage('El ID de la obra social debe ser un número entero'),
+    validarCampos
+], controller.desasociarObraSocial.bind(controller));
 
 /**
  * @swagger
