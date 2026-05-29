@@ -10,5 +10,8 @@ export default class MedicoCreateDto {
         
         // Aseguramos que el valor de la consulta sea un número decimal
         this.valorConsulta = object.valorConsulta !== undefined ? parseFloat(object.valorConsulta) : 0;
+        
+        // Recogemos el array de obras sociales (si viene, nos aseguramos que sea un array)
+        this.obrasSociales = Array.isArray(object.obrasSociales) ? object.obrasSociales : [];
     }
 }
