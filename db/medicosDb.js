@@ -106,8 +106,11 @@ export default class MedicosDb {
         } catch (error) {
             await conexion.rollback();
             console.error("Error en transacción asociarMultiples:", error);
+            // 'throw error' avisa hacia arriba (al Controlador) que algo falló, para que no devuelva un "200 OK" falso.
             throw error; 
         } finally {
+            // El 'finally' se ejecuta SIEMPRE (haya fallado o no). Es VITAL para devolver la conexión al pool
+            // y evitar que la base de datos colapse por conexiones atascadas.
             conexion.release();
         }
     }

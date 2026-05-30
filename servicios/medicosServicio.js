@@ -35,14 +35,10 @@ export default class MedicosServicio {
         const medicoExiste = await this.db.buscarPorId(id_medico);
         if (!medicoExiste) return null;
 
-        // 2. Extraemos los IDs asumiendo que llega un array como [{id_obra_social: 1}] o un array de IDs [1]
+        // 2. Extraemos los IDs asumiendo que llega el formato del profesor: [{id_obra_social: 1}]
         let idsNuevos = [];
         if (obras_sociales_nuevas.length > 0) {
-            if (typeof obras_sociales_nuevas[0] === 'object') {
-                idsNuevos = obras_sociales_nuevas.map(os => parseInt(os.id_obra_social));
-            } else {
-                idsNuevos = obras_sociales_nuevas.map(id => parseInt(id));
-            }
+            idsNuevos = obras_sociales_nuevas.map(os => parseInt(os.id_obra_social));
         }
 
         // 3. Limpiamos duplicados
