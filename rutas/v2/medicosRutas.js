@@ -107,7 +107,7 @@ const transformDTO = (req, res, next) => {
  *         description: Lista de médicos
  */
 router.get("/", 
-    [validateQueryParams, findAllTransformarQueryParams, cache("5 minutes")], 
+    [validateQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 

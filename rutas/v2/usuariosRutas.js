@@ -120,7 +120,7 @@ const transformDTO = (req, res, next) => {
  *         description: Lista de usuarios
  */
 router.get("/", 
-    [validarQueryParams, findAllTransformarQueryParams, cache("5 minutes")], 
+    [validarQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 

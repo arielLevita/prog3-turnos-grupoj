@@ -1,5 +1,6 @@
 import EspecialidadesDb from "../db/especialidadesDb.js";
 import EspecialidadResponseDto from "../dtos/especialidadResponseDto.js";
+import apicache from "apicache"
 
 export default class EspecialidadesServicio {
     static KEYS_MAP = {
@@ -38,6 +39,8 @@ export default class EspecialidadesServicio {
 
     crear = async (especialidadDto) => {
         const nuevo_id = await this.especialidadesDb.crear(especialidadDto);
+
+        apicache.clear()
         return this.buscarPorId(nuevo_id);
     }
 
@@ -46,6 +49,8 @@ export default class EspecialidadesServicio {
         if (!existe) return null;
 
         await this.especialidadesDb.modificar(id, especialidadDto);
+
+        apicache.clear()
         return this.buscarPorId(id);
     }
 
@@ -54,6 +59,8 @@ export default class EspecialidadesServicio {
         if (!existe) return null;
 
         await this.especialidadesDb.borrar(id);
+
+        apicache.clear()
         return id;
     }
 }

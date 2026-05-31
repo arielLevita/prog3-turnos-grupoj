@@ -4,6 +4,8 @@ import helmet from "helmet";
 import testConexion from "./db/test-conexion.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
+import fs from "fs";
+import morgan from "morgan";
 
 import { router as v1EspecialidadesRutas } from "./rutas/v1/especialidadesRutas.js";
 import { router as v2EspecialidadesRutas } from "./rutas/v2/especialidadesRutas.js";
@@ -19,6 +21,13 @@ import { validateContentType } from "./middlewares/validateContentType.js";
 const app = express();
 
 await testConexion();
+
+let log = fs.createWriteStream('./accesos.log', { 
+    flags: 'a'
+});
+
+app.use(morgan('dev'));
+app.use(morgan('combined', {stream: log}));
 
 app.use(validateContentType);
 app.use(express.json());
@@ -43,7 +52,7 @@ const swaggerOptions = {
         servers: [{ url: `http://localhost:${process.env.PUERTO || 3007}` }],
     },
     // Buscamos los comentarios de Swagger en todos los archivos JS de la carpeta de rutas
-    apis: ['./src/rutas/v2/*.js'],
+    apis: ['./rutas/v2/*.js'],
 };
 
 // Generamos y servimos la documentación en la ruta /api-docs
@@ -63,7 +72,7 @@ app.use('/api/v2/especialidades', v2EspecialidadesRutas);
 
 app.use('/api/v2/usuarios', v2UsuariosRutas);
 app.use('/api/v2/medicos', v2MedicosRutas);
-app.use('/api/v2/reservas', v2TurnosRutas);
+app.use('/api/v2/turnos', v2TurnosRutas);
 app.use('/api/v2/pacientes', v2PacientesRutas);
 app.use('/api/v2/obrasSociales', v2ObrasSocialesRutas);
 

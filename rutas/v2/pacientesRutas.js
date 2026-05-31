@@ -91,7 +91,7 @@ const transformarDTO = (req, res, next) => {
  *         description: Lista de pacientes
  */
 router.get("/", 
-    [validarQueryParams, buscarTodasTransformararQueryParams, cache("5 minutes")], 
+    [validarQueryParams, buscarTodasTransformararQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 

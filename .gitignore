@@ -4,3 +4,7 @@ Programacion/
 
 # Bruno API Client
 bruno/
+
+# Logs
+*.log
+accesos.log
