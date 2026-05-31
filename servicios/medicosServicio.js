@@ -31,26 +31,18 @@ export default class MedicosServicio {
     }
 
     asociarObrasSociales = async (id_medico, obras_sociales_nuevas) => {
-        // 1. Verificamos que el médico exista
         const medicoExiste = await this.db.buscarPorId(id_medico);
         if (!medicoExiste) return null;
 
-        // 2. Extraemos los IDs asumiendo que llega el formato del profesor: [{id_obra_social: 1}]
         let idsNuevos = [];
         if (obras_sociales_nuevas.length > 0) {
             idsNuevos = obras_sociales_nuevas.map(os => parseInt(os.id_obra_social));
         }
 
-        // 3. Limpiamos duplicados
         const obrasNuevasUnicas = [...new Set(idsNuevos)];
-
-        // 4. Buscamos en la BD qué obras sociales YA tiene este médico
         const obrasExistentes = await this.db.buscarAsociacionesPorMedico(id_medico);
-
-        // 5. Filtramos
         const obrasAInsertar = obrasNuevasUnicas.filter(id_nueva => !obrasExistentes.includes(id_nueva));
 
-        // 6. Insertamos
         if (obrasAInsertar.length > 0) {
             await this.db.asociarMultiples(id_medico, obrasAInsertar);
         }
@@ -59,17 +51,14 @@ export default class MedicosServicio {
     }
 
     desasociarObraSocial = async (id_medico, id_obra_social) => {
-        // 1. Verificamos que el médico exista
         const medicoExiste = await this.db.buscarPorId(id_medico);
-        if (!medicoExiste) return null; // Médico no existe
+        if (!medicoExiste) return null;
 
-        // 2. Buscamos si la asociación realmente existe
         const obrasExistentes = await this.db.buscarAsociacionesPorMedico(id_medico);
         if (!obrasExistentes.includes(parseInt(id_obra_social))) {
-            return false; // La asociación no existe
+            return false;
         }
 
-        // 3. Borramos
         await this.db.desasociarObraSocial(id_medico, id_obra_social);
         return true;
     }

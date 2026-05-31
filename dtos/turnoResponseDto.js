@@ -1,6 +1,6 @@
 export default class TurnoResponseDto {
     constructor(dbRow) {
-        this.idTurnoTurno = dbRow.id_turno_reserva;
+        this.idTurnoReserva = dbRow.id_turno_reserva;
         this.idMedico = dbRow.id_medico;
         this.idPaciente = dbRow.id_paciente;
         this.idObraSocial = dbRow.id_obra_social;
