@@ -99,7 +99,7 @@ export default class MedicosControlador {
                 return res.status(404).json({ estado: false, msg: 'La obra social no estaba asociada a este médico' });
             }
 
-            return res.status(204).send();
+            res.status(200).json({ estado: true, msg: 'Relación médico-obra social eliminada (soft delete)' });
 
         } catch (error) {
             console.log(error);
