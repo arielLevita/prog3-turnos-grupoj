@@ -178,9 +178,15 @@ tbody tr:last-child td {
 }
 
 .badge-done {
-    background: rgba(16, 185, 129, 0.15);
-    color: #6ee7b7;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: rgba(16, 185, 129, 0.25);
+    color: #000000;
+    border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+.badge-info {
+    background: rgba(2, 132, 199, 0.25);
+    color: #000000;
+    border: 1px solid rgba(2, 132, 199, 0.5);
 }
 
 .btn-marcar {
