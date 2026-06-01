@@ -2,19 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
 
 :root {
-    /* Paleta de colores Oscura y Vibrante (Cyber-Hospital) */
-    --bg-color: #0f172a; /* Slate 900 */
-    --bg-card: rgba(30, 41, 59, 0.7); /* Slate 800 transparente */
-    --primary-color: #0ea5e9; /* Light Blue 500 */
-    --primary-glow: rgba(14, 165, 233, 0.4);
-    --secondary-color: #10b981; /* Emerald 500 */
-    --text-main: #f8fafc; /* Slate 50 */
-    --text-muted: #94a3b8; /* Slate 400 */
-    --border-color: rgba(255, 255, 255, 0.1);
+    /* Paleta de colores Clara (Blanco, Azul y Verde) */
+    --bg-color: #f8fafc; /* Fondo casi blanco */
+    --bg-card: rgba(255, 255, 255, 0.9); /* Tarjetas blancas semitransparentes */
+    --primary-color: #0284c7; /* Azul médico profesional */
+    --primary-glow: rgba(2, 132, 199, 0.3);
+    --secondary-color: #059669; /* Verde de éxito/salud */
+    --text-main: #0f172a; /* Texto oscuro para contraste */
+    --text-muted: #475569; /* Texto gris secundario */
+    --border-color: rgba(0, 0, 0, 0.1);
     
-    /* Glassmorphism */
+    /* Efecto Vidrio (Glassmorphism) */
     --glass-blur: blur(12px);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glass-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
 }
 
 * {
