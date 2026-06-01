@@ -49,9 +49,7 @@ const buscarTodasTransformarQueryParams = (req, res, next) => {
 const transformarDTO = (req, res, next) => {
     req.dto = new EspecialidadCreateDto(req.body);
     next();
-};
-
-// --- SCHEMAS DE SWAGGER (DOCUMENTACIÓN) ---
+};
 /**
  * @swagger
  * components:
@@ -70,9 +68,7 @@ const transformarDTO = (req, res, next) => {
  *       example:
  *         idEspecialidad: 1
  *         nombre: PEDIATRÍA
- */
-
-// --- RUTAS CON .bind(controller) ---
+ */
 
 /**
  * @swagger
@@ -184,7 +180,6 @@ router.delete("/:id_especialidad",
     validarId, 
     controller.borrar.bind(controller)
 );
-
 
 export { router }; 
 

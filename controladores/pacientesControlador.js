@@ -33,8 +33,7 @@ export default class PacientesControlador {
         try {
             const idGenerado = await this.servicio.crear(req.dto);
             res.status(201).json({ estado: true, msg: `Paciente registrado con ID ${idGenerado}` });
-        } catch (error) {
-            // Manejamos errores de llave foránea (si mandan un idUsuario que no existe)
+        } catch (error) {
             if (error.code === 'ER_NO_REFERENCED_ROW_2') {
                 return res.status(400).json({ error: 'El ID de Usuario o de Obra Social no existe' });
             }

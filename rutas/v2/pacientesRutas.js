@@ -1,4 +1,4 @@
-// src/rutas/v2/pacientesRutas.js
+
 import express from 'express';
 import { query, param, body } from "express-validator";
 import apicache from "apicache";
@@ -54,9 +54,7 @@ const buscarTodasTransformararQueryParams = (req, res, next) => {
 const transformarDTO = (req, res, next) => {
     req.dto = new PacienteCreateDto(req.body);
     next();
-};
-
-// --- SCHEMAS DE SWAGGER (DOCUMENTACIÓN) ---
+};
 /**
  * @swagger
  * components:
@@ -76,9 +74,7 @@ const transformarDTO = (req, res, next) => {
  *       example:
  *         idUsuario: 5
  *         idObraSocial: 1
- */
-
-// --- RUTAS CON .bind(controller) ---
+ */
 
 /**
  * @swagger
@@ -91,7 +87,7 @@ const transformarDTO = (req, res, next) => {
  *         description: Lista de pacientes
  */
 router.get("/", 
-    [validarQueryParams, buscarTodasTransformararQueryParams, cache("5 minutes")], 
+    [validarQueryParams, buscarTodasTransformararQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 

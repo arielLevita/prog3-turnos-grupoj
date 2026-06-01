@@ -7,9 +7,7 @@ import validarCampos from '../../middlewares/validarCampos.js';
 
 const cache = apicache.middleware;
 const controller = new ObrasSocialesControlador();
-const router = express.Router();
-
-// --- MIDDLEWARES LOCALES ---
+const router = express.Router();
 
 const validarId = [
     param('id_obra_social').notEmpty().isInt({ min: 1 }).toInt(),
@@ -25,9 +23,7 @@ const validarQueryParams = [
     query('order').optional().isIn(['nombre', 'idObraSocial', 'porcentajeDescuento']),
     query('asc').optional().isBoolean().toBoolean(),
     validarCampos
-];
-
-// Validamos el JSON completo que nos mandan
+];
 const validarPayload = [
     body("nombre").notEmpty().withMessage("El nombre es obligatorio").isLength({ max: 120 }),
     body("descripcion").notEmpty().withMessage("La descripción es obligatoria").isLength({ max: 255 }),
@@ -58,9 +54,7 @@ const findAllTransformarQueryParams = (req, res, next) => {
 const transformDTO = (req, res, next) => {
     req.dto = new ObraSocialCreateDto(req.body);
     next();
-};
-
-// --- SCHEMAS DE SWAGGER (DOCUMENTACIÓN) ---
+};
 /**
  * @swagger
  * components:
@@ -93,9 +87,7 @@ const transformDTO = (req, res, next) => {
  *         descripcion: Obra Social de la Universidad
  *         porcentajeDescuento: 10.5
  *         esParticular: false
- */
-
-// --- RUTAS CON .bind(controller) ---
+ */
 
 /**
  * @swagger

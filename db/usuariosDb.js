@@ -14,8 +14,7 @@ export default class UsuariosDb {
                 if (clave === 'apellido' || clave === 'nombres' || clave === 'email') {
                     strSql += `${clave} LIKE ? AND `;
                     filterValuesArray.push(`%${filters[clave]}%`);
-                } else {
-                    // Para documento y rol, búsqueda exacta
+                } else {
                     strSql += `${clave} = ? AND `;
                     filterValuesArray.push(filters[clave]);
                 }
@@ -53,8 +52,7 @@ export default class UsuariosDb {
         return resultado.insertId;
     }
 
-    modificar = async (id, { documento, apellido, nombres, email, contrasenia, fotoPath, rol }) => {
-        // Si mandaron una contraseña nueva, la actualizamos. Si no, dejamos la que estaba.
+    modificar = async (id, { documento, apellido, nombres, email, contrasenia, fotoPath, rol }) => {
         let strSql = "";
         let values = [];
 

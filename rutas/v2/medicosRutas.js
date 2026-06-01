@@ -23,9 +23,7 @@ const validateQueryParams = [
     query('order').optional().isIn(['apellido', 'matricula', 'valor_consulta']),
     query('asc').optional().isBoolean().toBoolean(),
     validarCampos
-];
-
-// Validamos el JSON completo de entrada
+];
 const validatePayload = [
     body("idUsuario").notEmpty().isInt({ min: 1 }).withMessage("ID de usuario obligatorio"),
     body("idEspecialidad").notEmpty().isInt({ min: 1 }).withMessage("ID de especialidad obligatorio"),
@@ -54,13 +52,10 @@ const findAllTransformarQueryParams = (req, res, next) => {
     next();
 };
 
-
 const transformDTO = (req, res, next) => {
     req.dto = new MedicoCreateDto(req.body);
     next();
-};
-
-// --- SCHEMAS DE SWAGGER (DOCUMENTACIÓN) ---
+};
 /**
  * @swagger
  * components:
@@ -92,9 +87,7 @@ const transformDTO = (req, res, next) => {
  *         matricula: 12345
  *         descripcion: "Atiende lunes y miércoles"
  *         valorConsulta: 12000.50
- */
-
-// --- RUTAS CON .bind(controller) ---
+ */
 
 /**
  * @swagger
@@ -107,7 +100,7 @@ const transformDTO = (req, res, next) => {
  *         description: Lista de médicos
  */
 router.get("/", 
-    [validateQueryParams, findAllTransformarQueryParams, cache("5 minutes")], 
+    [validateQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
@@ -153,24 +146,17 @@ router.post("/",
     controller.crear.bind(controller)
 );
 
-// router.post('/:id_medico/obras-sociales', [
-
-//     validatePayload, transformDTO
-
-// ], controller.asociarMedicosObrasSociales.bind(controller) );
-
 router.post('/:id_medico/obras-sociales', [
-
-    param('id_medico').isInt(),
-
-    body('obrasSociales').isArray({ min: 1 }),
-
-    body('obrasSociales.*.id_obra_social')
-        .isInt(),
-
+    param('id_medico').isInt().withMessage('El ID del médico debe ser un número entero'),
+    body('obras_sociales').isArray({ min: 1 }).withMessage('Debe enviar un array de obras sociales'),
     validarCampos
+], controller.asociarObrasSociales.bind(controller));
 
-], controller.asociarMedicosObrasSociales.bind(controller));
+router.delete('/:id_medico/obras-sociales/:id_obra_social', [
+    param('id_medico').isInt().withMessage('El ID del médico debe ser un número entero'),
+    param('id_obra_social').isInt().withMessage('El ID de la obra social debe ser un número entero'),
+    validarCampos
+], controller.desasociarObraSocial.bind(controller));
 
 /**
  * @swagger
@@ -221,5 +207,4 @@ router.delete("/:id_medico",
 );
 
 export { router };
-
 

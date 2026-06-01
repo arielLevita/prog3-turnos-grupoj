@@ -5,7 +5,6 @@ export default class EspecialidadesControlador {
         this.service = new EspecialidadesServicio();
     }
 
-
     buscarTodas = async (req, res) => {
         const { filter, limit, offset, order } = req.query;
 
@@ -22,7 +21,6 @@ export default class EspecialidadesControlador {
             res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
         }
     }
-
 
     buscarPorId = async (req, res) => {
         try {
@@ -43,8 +41,8 @@ export default class EspecialidadesControlador {
         const especialidad = req.dto; // Usamos el DTO que ya viene limpio de la ruta
 
         try {
-            const idNuevo = await this.service.crear(especialidad);
-            res.status(201).json({ estado: true, msg: `ID Creado ${idNuevo}` });
+            const nuevaEspecialidad = await this.service.crear(especialidad);
+            res.status(201).json({ estado: true, especialidad: nuevaEspecialidad });
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
                 return res.status(400).json({ estado: false, msg: 'La especialidad ya existe' });
@@ -59,13 +57,13 @@ export default class EspecialidadesControlador {
         const especialidad = req.dto;
 
         try {
-            const existe = await this.service.buscarPorId(id);
-            if (!existe) {
+            const especialidadModificada = await this.service.modificar(id, especialidad);
+            
+            if (!especialidadModificada) {
                 return res.status(404).json({ estado: false, msg: 'Especialidad no encontrada' });
             }
 
-            await this.service.modificar(id, especialidad);
-            res.status(200).json({ estado: true, msg: 'Especialidad modificada' });
+            res.status(200).json({ estado: true, especialidad: especialidadModificada });
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
                 return res.status(400).json({ estado: false, msg: 'Ese nombre de especialidad ya está en uso' });
@@ -79,12 +77,12 @@ export default class EspecialidadesControlador {
         const id = req.params.id_especialidad;
 
         try {
-            const existe = await this.service.buscarPorId(id);
-            if (!existe) {
+            const idBorrado = await this.service.borrar(id);
+            
+            if (!idBorrado) {
                 return res.status(404).json({ estado: false, msg: 'Especialidad no encontrada' });
             }
 
-            await this.service.borrar(id);
             res.status(200).json({ estado: true, msg: 'Especialidad eliminada' });
         } catch (error) {
             console.error(error);
