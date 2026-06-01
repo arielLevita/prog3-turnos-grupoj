@@ -33,7 +33,7 @@ export default class MedicosServicio {
 
         for (const os of obras_sociales) {
     
-            const existe = await this.medicos.buscarRelacion(
+            const existe = await this.db.buscarRelacion(
                 id_medico,
                 os.id_obra_social
             );
@@ -41,8 +41,8 @@ export default class MedicosServicio {
             if (existe.length > 0) {
                 continue; 
             }
-    
-            await this.medicos.insertRelacion(id_medico, os.id_obra_social);
+            
+            await this.db.relacionarConObraSocial(id_medico, os.id_obra_social);
         }
     
         return true;

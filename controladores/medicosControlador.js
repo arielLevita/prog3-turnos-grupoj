@@ -63,7 +63,7 @@ export default class MedicosControlador {
             const id_medico = req.params.id_medico;
             const { obrasSociales } = req.body;
 
-            const relacion = await this.medicos.relacionarConObraSocial(id_medico, obrasSociales);
+            const relacion = await this.servicio.relacionarConObraSocial(id_medico, obrasSociales);
 
             if (!relacion) {
                 return res.status(400).json({ estado: false, msg: 'No se crearon las relaciones' });

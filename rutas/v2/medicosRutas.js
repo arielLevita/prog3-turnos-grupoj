@@ -165,8 +165,7 @@ router.post('/:id_medico/obras-sociales', [
 
     body('obrasSociales').isArray({ min: 1 }),
 
-    body('obrasSociales.*.id_obra_social')
-        .isInt(),
+    body('obrasSociales.*.id_obra_social').isInt(),
 
     validarCampos
 

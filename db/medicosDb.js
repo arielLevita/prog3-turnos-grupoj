@@ -76,18 +76,12 @@ export default class MedicosDb {
         return rows;
     }
 
-    relacionarConObraSocial = async (id_medico, obras_sociales) => {
+    relacionarConObraSocial = async (id_medico, id_obra_social) => {
         const conexion = await pool.getConnection();
         try {
-            await conexion.beginTransaction();
+            const sql = "INSERT INTO medicos_obras_sociales (id_medico, id_obra_social) VALUES (?, ?);"
+            await conexion.execute(sql, [id_medico, id_obra_social]);
 
-            for(const os of obras_sociales){
-                const sql = "INSERT INTO medicos_obras_sociales (id_medico, id_obra_social) VALUES (?, ?);"
-                await conexion.execute(sql, [id_medico, os.id_obra_social]);
-
-            }
-
-            await conexion.commit();
             conexion.release();
             return true;
             
