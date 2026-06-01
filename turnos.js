@@ -47,7 +47,7 @@ app.set('views', './views');
 app.use(express.static('public'));
 
 const corsOptions = {
-    origin: ['http://localhost:3000', 'http://localhost:5173'], //* Acá van las urls del Front-end.
+    origin: ['http://localhost:3007', 'http://localhost:5173'], //* Acá van las urls del Front-end.
     optionsSuccessStatus: 200, 
 };
 
