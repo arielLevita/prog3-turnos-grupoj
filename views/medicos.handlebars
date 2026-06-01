@@ -9,6 +9,7 @@
                 <th>Matrícula</th>
                 <th>Nombre Completo</th>
                 <th>Especialidad</th>
+                <th>Contacto</th>
                 <th>Valor Consulta</th>
             </tr>
         </thead>
@@ -18,6 +19,7 @@
                 <td><strong>{{this.matricula}}</strong></td>
                 <td>Dr/a. {{this.apellido}}, {{this.nombres}}</td>
                 <td><span class="badge badge-done">{{this.especialidadNombre}}</span></td>
+                <td>{{this.email}}</td>
                 <td class="price">$ {{this.valorConsulta}}</td>
             </tr>
             {{/each}}
