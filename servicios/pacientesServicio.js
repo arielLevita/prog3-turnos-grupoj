@@ -31,9 +31,7 @@ export default class PacientesServicio {
 
     borrar = async (id) => {
         const existe = await this.db.buscarPorId(id);
-        if (!existe) return null;
-
-        // Esto apagará la cuenta de usuario vinculada a este paciente
+        if (!existe) return null;
         await this.db.borrar(id);
         return id;
     }

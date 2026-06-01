@@ -18,7 +18,8 @@ export default class MedicosServicio {
     }
 
     crear = async (medicoCreateDto) => {
-        return await this.db.crear(medicoCreateDto);
+        const nuevo_id = await this.db.crear(medicoCreateDto);
+        return await this.buscarPorId(nuevo_id);
     }
 
     modificar = async (id, medicoCreateDto) => {
@@ -26,28 +27,41 @@ export default class MedicosServicio {
         if (!existe) return null;
 
         await this.db.modificar(id, medicoCreateDto);
-        return id;
+        return await this.buscarPorId(id);
     }
 
-    relacionarConObraSocial = async (id_medico, obras_sociales) => {
+    asociarObrasSociales = async (id_medico, obras_sociales_nuevas) => {
+        const medicoExiste = await this.db.buscarPorId(id_medico);
+        if (!medicoExiste) return null;
 
-        for (const os of obras_sociales) {
-    
-            const existe = await this.medicos.buscarRelacion(
-                id_medico,
-                os.id_obra_social
-            );
-    
-            if (existe.length > 0) {
-                continue; 
-            }
-    
-            await this.medicos.insertRelacion(id_medico, os.id_obra_social);
+        let idsNuevos = [];
+        if (obras_sociales_nuevas.length > 0) {
+            idsNuevos = obras_sociales_nuevas.map(os => parseInt(os.id_obra_social));
         }
-    
+
+        const obrasNuevasUnicas = [...new Set(idsNuevos)];
+        const obrasExistentes = await this.db.buscarAsociacionesPorMedico(id_medico);
+        const obrasAInsertar = obrasNuevasUnicas.filter(id_nueva => !obrasExistentes.includes(id_nueva));
+
+        if (obrasAInsertar.length > 0) {
+            await this.db.asociarMultiples(id_medico, obrasAInsertar);
+        }
+
         return true;
     }
 
+    desasociarObraSocial = async (id_medico, id_obra_social) => {
+        const medicoExiste = await this.db.buscarPorId(id_medico);
+        if (!medicoExiste) return null;
+
+        const obrasExistentes = await this.db.buscarAsociacionesPorMedico(id_medico);
+        if (!obrasExistentes.includes(parseInt(id_obra_social))) {
+            return false;
+        }
+
+        await this.db.desasociarObraSocial(id_medico, id_obra_social);
+        return true;
+    }
 
     borrar = async (id) => {
         const existe = await this.db.buscarPorId(id);
@@ -57,11 +71,5 @@ export default class MedicosServicio {
         return id;
     }
 }
-
-
-
-
-
-
 
     

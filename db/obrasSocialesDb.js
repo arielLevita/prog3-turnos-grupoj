@@ -1,8 +1,6 @@
 import pool from "./conexion.js";
 
-export default class ObrasSocialesDb {
-    
-    // Lista todas las obras sociales con filtros, paginación y ordenamiento
+export default class ObrasSocialesDb {
     buscarTodas = async (filters = null, limit = 0, offset = 0, order = null) => {
         let strSql = `SELECT id_obra_social, nombre, descripcion, porcentaje_descuento, es_particular 
                       FROM obras_sociales 
@@ -11,13 +9,11 @@ export default class ObrasSocialesDb {
 
         if (filters) {
             strSql += "AND ";
-            for (const clave of Object.keys(filters)) {
-                // Si el filtro es un texto (nombre o descripcion), usamos LIKE
+            for (const clave of Object.keys(filters)) {
                 if (clave === 'nombre' || clave === 'descripcion') {
                     strSql += `${clave} LIKE ? AND `;
                     filterValuesArray.push(`%${filters[clave]}%`);
-                } else {
-                    // Si es un número exacto (ej: es_particular = 1)
+                } else {
                     strSql += `${clave} = ? AND `;
                     filterValuesArray.push(filters[clave]);
                 }
@@ -38,18 +34,14 @@ export default class ObrasSocialesDb {
 
         const [rows] = await pool.query(strSql, filterValuesArray);
         return rows;
-    }
-
-    // Busca una obra social específica
+    }
     buscarPorId = async (id) => {
         const strSql = `SELECT id_obra_social, nombre, descripcion, porcentaje_descuento, es_particular 
                         FROM obras_sociales 
                         WHERE activo = 1 AND id_obra_social = ?`;
         const [rows] = await pool.execute(strSql, [id]);
         return (rows.length > 0) ? rows[0] : null;
-    }
-
-    // Inserta un nuevo registro
+    }
     crear = async ({ nombre, descripcion, porcentajeDescuento, esParticular }) => {
         const strSql = `INSERT INTO obras_sociales (nombre, descripcion, porcentaje_descuento, es_particular) 
                         VALUES (?, ?, ?, ?)`;

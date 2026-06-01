@@ -1,0 +1,29 @@
+<h2 class="page-title">Directorio de Pacientes</h2>
+<p class="page-subtitle">Lista de pacientes registrados en la clínica</p>
+
+<div class="table-container">
+    {{#if pacientes.length}}
+    <table>
+        <thead>
+            <tr>
+                <th>DNI / ID</th>
+                <th>Nombre Completo</th>
+                <th>Obra Social Asignada</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each pacientes}}
+            <tr>
+                <td><strong>#{{this.idPaciente}}</strong></td>
+                <td>{{this.apellido}}, {{this.nombres}}</td>
+                <td><span class="badge badge-done">{{this.descripcionObraSocial}}</span></td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+        <div class="empty-state">
+            <h3>No hay pacientes registrados.</h3>
+        </div>
+    {{/if}}
+</div>

@@ -31,8 +31,8 @@ export default class MedicosControlador {
 
     crear = async (req, res) => {
         try {
-            const idGenerado = await this.servicio.crear(req.dto);
-            res.status(201).json({ estado: true, msg: `Médico registrado con ID ${idGenerado}` });
+            const nuevoMedico = await this.servicio.crear(req.dto);
+            res.status(201).json({ estado: true, medico: nuevoMedico });
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
                 return res.status(400).json({ error: 'La matrícula ya se encuentra registrada a otro médico' });
@@ -44,12 +44,12 @@ export default class MedicosControlador {
     modificar = async (req, res) => {
         try {
             const id = req.params.id_medico;
-            const idModificado = await this.servicio.modificar(id, req.dto);
+            const medicoModificado = await this.servicio.modificar(id, req.dto);
             
-            if (!idModificado) {
+            if (!medicoModificado) {
                 return res.status(404).json({ error: 'Médico no encontrado' });
             }
-            res.status(200).json({ estado: true, msg: 'Datos del médico modificados con éxito' });
+            res.status(200).json({ estado: true, medico: medicoModificado });
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
                 return res.status(400).json({ error: 'La matrícula ya se encuentra registrada a otro médico' });
@@ -58,23 +58,50 @@ export default class MedicosControlador {
         }
     }
 
-    asociarMedicosObrasSociales = async (req, res) => {
+    asociarObrasSociales = async (req, res) => {
         try {
             const id_medico = req.params.id_medico;
-            const { obrasSociales } = req.body;
+            const obras_sociales = req.body.obras_sociales;
 
-            const relacion = await this.medicos.relacionarConObraSocial(id_medico, obrasSociales);
-
-            if (!relacion) {
-                return res.status(400).json({ estado: false, msg: 'No se crearon las relaciones' });
+            if (!obras_sociales || !Array.isArray(obras_sociales) || obras_sociales.length === 0) {
+                return res.status(400).json({ estado: false, msg: 'Debe enviar un array de obras_sociales' });
             }
 
-            res.status(201).json({ estado: true, msg: 'Relacion creada' });
+            const resultado = await this.servicio.asociarObrasSociales(id_medico, obras_sociales);
+
+            if (!resultado) {
+                return res.status(404).json({ estado: false, msg: 'Médico no encontrado' });
+            }
+
+            res.status(201).json({ estado: true, msg: 'Obras sociales asociadas correctamente' });
 
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
                 return res.status(400).json({ estado: false, msg: 'Esos datos ya están en uso' });
             }
+            console.log(error);
+            res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
+        }
+    }
+
+    desasociarObraSocial = async (req, res) => {
+        try {
+            const id_medico = req.params.id_medico;
+            const id_obra_social = req.params.id_obra_social;
+
+            const resultado = await this.servicio.desasociarObraSocial(id_medico, id_obra_social);
+
+            if (resultado === null) {
+                return res.status(404).json({ estado: false, msg: 'Médico no encontrado' });
+            }
+
+            if (resultado === false) {
+                return res.status(404).json({ estado: false, msg: 'La obra social no estaba asociada a este médico' });
+            }
+
+            return res.status(204).send();
+
+        } catch (error) {
             console.log(error);
             res.status(500).json({ estado: false, msg: 'Error interno del servidor' });
         }
@@ -93,7 +120,5 @@ export default class MedicosControlador {
         }
     }
 }
-
-   
 
    

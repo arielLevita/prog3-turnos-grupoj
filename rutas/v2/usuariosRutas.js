@@ -25,15 +25,12 @@ const validarQueryParams = [
     query('order').optional().isIn(['apellido', 'documento', 'id_usuario']),
     query('asc').optional().isBoolean().toBoolean(),
     validarCampos
-];
-
-// Validamos lo que entra al crear o modificar
+];
 const validarPayload = [
     body("documento").notEmpty().withMessage("El documento es obligatorio").isLength({ max: 20 }),
     body("apellido").notEmpty().withMessage("El apellido es obligatorio").isLength({ max: 100 }),
     body("nombres").notEmpty().withMessage("El nombre es obligatorio").isLength({ max: 100 }),
-    body("email").notEmpty().isEmail().withMessage("Debe ser un email válido").isLength({ max: 255 }),
-    // La contraseña es opcional al modificar, pero obligatoria al crear (lo maneja la DB/DTO)
+    body("email").notEmpty().isEmail().withMessage("Debe ser un email válido").isLength({ max: 255 }),
     body("contrasenia").optional().isString().isLength({ min: 6 }).withMessage("Mínimo 6 caracteres"),
     body("rol").optional().isInt({ min: 1, max: 3 }).withMessage("El rol debe ser 1 (Médico), 2 (Paciente) o 3 (Admin)"),
     validarCampos
@@ -63,9 +60,7 @@ const findAllTransformarQueryParams = (req, res, next) => {
 const transformDTO = (req, res, next) => {
     req.dto = new UsuarioCreateDto(req.body);
     next();
-};
-
-// --- SCHEMAS DE SWAGGER (DOCUMENTACIÓN) ---
+};
 /**
  * @swagger
  * components:
@@ -105,9 +100,7 @@ const transformDTO = (req, res, next) => {
  *         email: "juanperez@correo.com"
  *         contrasenia: "mipassword123"
  *         rol: 2
- */
-
-// --- RUTAS CON .bind(controller) ---
+ */
 
 /**
  * @swagger
@@ -120,7 +113,7 @@ const transformDTO = (req, res, next) => {
  *         description: Lista de usuarios
  */
 router.get("/", 
-    [validarQueryParams, findAllTransformarQueryParams, cache("5 minutes")], 
+    [validarQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 

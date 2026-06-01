@@ -4,6 +4,9 @@ import helmet from "helmet";
 import testConexion from "./db/test-conexion.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
+import fs from "fs";
+import morgan from "morgan";
+import { engine } from 'express-handlebars';
 
 import { router as v1EspecialidadesRutas } from "./rutas/v1/especialidadesRutas.js";
 import { router as v2EspecialidadesRutas } from "./rutas/v2/especialidadesRutas.js";
@@ -16,12 +19,32 @@ import { router as v2MedicosRutas } from "./rutas/v2/medicosRutas.js";
 // import { router as v2MedicosObrasSocialesRutas } from "./rutas/v2/medicosObrasSocialesRutas.js";
 import { validateContentType } from "./middlewares/validateContentType.js";
 
+// --- RUTAS WEB (Handlebars) ---
+import { router as turnosWebRutas } from "./rutas/web/turnosWebRutas.js";
+import { router as medicosWebRutas } from "./rutas/web/medicosWebRutas.js";
+import { router as pacientesWebRutas } from "./rutas/web/pacientesWebRutas.js";
+
 const app = express();
 
 await testConexion();
 
+let log = fs.createWriteStream('./accesos.log', { 
+    flags: 'a'
+});
+
+app.use(morgan('dev'));
+app.use(morgan('combined', {stream: log}));
+
 app.use(validateContentType);
 app.use(express.json());
+
+// --- CONFIGURACIÓN DE HANDLEBARS ---
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', './views');
+
+// --- ARCHIVOS ESTÁTICOS (CSS, Imágenes) ---
+app.use(express.static('public'));
 
 const corsOptions = {
     origin: ['http://localhost:3000', 'http://localhost:5173'], //* Acá van las urls del Front-end.
@@ -43,7 +66,7 @@ const swaggerOptions = {
         servers: [{ url: `http://localhost:${process.env.PUERTO || 3007}` }],
     },
     // Buscamos los comentarios de Swagger en todos los archivos JS de la carpeta de rutas
-    apis: ['./src/rutas/v2/*.js'],
+    apis: ['./rutas/v2/*.js'],
 };
 
 // Generamos y servimos la documentación en la ruta /api-docs
@@ -63,11 +86,16 @@ app.use('/api/v2/especialidades', v2EspecialidadesRutas);
 
 app.use('/api/v2/usuarios', v2UsuariosRutas);
 app.use('/api/v2/medicos', v2MedicosRutas);
-app.use('/api/v2/reservas', v2TurnosRutas);
+app.use('/api/v2/turnos', v2TurnosRutas);
 app.use('/api/v2/pacientes', v2PacientesRutas);
 app.use('/api/v2/obrasSociales', v2ObrasSocialesRutas);
 
 // app.use('/api/v2/medicos-obras-sociales', v2MedicosObrasSocialesRutas);
+
+// --- MONTAJE DE RUTAS WEB ---
+app.use('/web/turnos', turnosWebRutas);
+app.use('/web/medicos', medicosWebRutas);
+app.use('/web/pacientes', pacientesWebRutas);
 
 const PUERTO = process.env.PUERTO || 3007;
 

@@ -7,8 +7,7 @@ export default class UsuariosServicio {
     }
 
     buscarTodas = async (filters, limit, offset, order) => {
-        const usuariosCrud = await this.db.buscarTodas(filters, limit, offset, order);
-        // Transformamos la lista cruda y filtramos las contraseñas usando el DTO
+        const usuariosCrud = await this.db.buscarTodas(filters, limit, offset, order);
         return usuariosCrud.map(usuario => new UsuarioResponseDto(usuario));
     }
 

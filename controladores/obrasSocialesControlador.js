@@ -33,8 +33,7 @@ export default class ObrasSocialesControlador {
         try {
             const idGenerado = await this.servicio.crear(req.dto);
             res.status(201).json({ estado: true, msg: `Obra Social creada con ID ${idGenerado}` });
-        } catch (error) {
-            // Manejamos el error si intentan meter un nombre duplicado (Unique Constraint)
+        } catch (error) {
             if (error.code === 'ER_DUP_ENTRY') {
                 return res.status(400).json({ error: 'Ya existe una obra social con ese nombre' });
             }
