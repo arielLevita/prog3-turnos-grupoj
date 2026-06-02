@@ -23,7 +23,8 @@ const validateQueryParams = [
     query('order').optional().isIn(['apellido', 'matricula', 'valor_consulta']),
     query('asc').optional().isBoolean().toBoolean(),
     validarCampos
-];
+];
+
 const validatePayload = [
     body("idUsuario").notEmpty().isInt({ min: 1 }).withMessage("ID de usuario obligatorio"),
     body("idEspecialidad").notEmpty().isInt({ min: 1 }).withMessage("ID de especialidad obligatorio"),
@@ -55,92 +56,18 @@ const findAllTransformarQueryParams = (req, res, next) => {
 const transformDTO = (req, res, next) => {
     req.dto = new MedicoCreateDto(req.body);
     next();
-};
-/**
- * @swagger
- * components:
- *   schemas:
- *     Medico:
- *       type: object
- *       required:
- *         - idUsuario
- *         - idEspecialidad
- *         - matricula
- *         - valorConsulta
- *       properties:
- *         idUsuario:
- *           type: integer
- *           description: ID del usuario asociado a este médico
- *         idEspecialidad:
- *           type: integer
- *           description: ID de la especialidad
- *         matricula:
- *           type: integer
- *         descripcion:
- *           type: string
- *         valorConsulta:
- *           type: number
- *           format: float
- *       example:
- *         idUsuario: 1
- *         idEspecialidad: 2
- *         matricula: 12345
- *         descripcion: "Atiende lunes y miércoles"
- *         valorConsulta: 12000.50
- */
+};
 
-/**
- * @swagger
- * /api/v2/medicos:
- *   get:
- *     summary: Obtiene la lista de médicos (con datos de usuario y especialidad)
- *     tags: [Médicos]
- *     responses:
- *       200:
- *         description: Lista de médicos
- */
 router.get("/", 
     [validateQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/medicos/{id_medico}:
- *   get:
- *     summary: Obtiene un médico por ID
- *     tags: [Médicos]
- *     parameters:
- *       - name: id_medico
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Médico encontrado
- */
 router.get("/:id_medico", 
     validateId, 
     controller.buscarPorId.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/medicos:
- *   post:
- *     summary: Registra un nuevo médico
- *     tags: [Médicos]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Medico'
- *     responses:
- *       201:
- *         description: Creado con éxito
- */
 router.post("/", 
     [validatePayload, transformDTO], 
     controller.crear.bind(controller)
@@ -158,49 +85,11 @@ router.delete('/:id_medico/obras-sociales/:id_obra_social', [
     validarCampos
 ], controller.desasociarObraSocial.bind(controller));
 
-/**
- * @swagger
- * /api/v2/medicos/{id_medico}:
- *   put:
- *     summary: Actualiza datos de un médico
- *     tags: [Médicos]
- *     parameters:
- *       - name: id_medico
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Medico'
- *     responses:
- *       200:
- *         description: Modificado con éxito
- */
 router.put("/:id_medico", 
     [validateId, validatePayload, transformDTO], 
     controller.modificar.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/medicos/{id_medico}:
- *   delete:
- *     summary: Borrado lógico (Desactiva al usuario)
- *     tags: [Médicos]
- *     parameters:
- *       - name: id_medico
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Eliminado con éxito
- */
 router.delete("/:id_medico", 
     validateId, 
     controller.borrar.bind(controller)

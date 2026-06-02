@@ -1,0 +1,210 @@
+{
+    "components": {
+        "schemas": {
+            "PacienteInput": {
+                "type": "object",
+                "required": [
+                    "idUsuario",
+                    "idObraSocial"
+                ],
+                "properties": {
+                    "idUsuario": {
+                        "type": "integer",
+                        "description": "ID del usuario asociado a este paciente."
+                    },
+                    "idObraSocial": {
+                        "type": "integer",
+                        "description": "ID de la obra social del paciente."
+                    }
+                },
+                "example": {
+                    "idUsuario": 5,
+                    "idObraSocial": 1
+                }
+            },
+            "PacienteResponse": {
+                "type": "object",
+                "properties": {
+                    "idPaciente": {
+                        "type": "integer",
+                        "description": "ID único del paciente."
+                    },
+                    "idUsuario": {
+                        "type": "integer"
+                    },
+                    "documento": {
+                        "type": "string"
+                    },
+                    "apellido": {
+                        "type": "string"
+                    },
+                    "nombres": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "idObraSocial": {
+                        "type": "integer"
+                    },
+                    "obraSocialNombre": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "idPaciente": 1,
+                    "idUsuario": 5,
+                    "documento": "31000111",
+                    "apellido": "Lopez",
+                    "nombres": "Marcelo",
+                    "email": "lopmar@correo.com",
+                    "idObraSocial": 1,
+                    "obraSocialNombre": "OSUNER"
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/v2/pacientes": {
+            "get": {
+                "summary": "Obtiene la lista de pacientes (con datos de usuario y obra social)",
+                "tags": [
+                    "Pacientes"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de pacientes obtenida con éxito.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PacienteResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Registra un nuevo paciente",
+                "tags": [
+                    "Pacientes"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PacienteInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Paciente creado con éxito.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PacienteResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/pacientes/{id_paciente}": {
+            "get": {
+                "summary": "Obtiene un paciente por ID",
+                "tags": [
+                    "Pacientes"
+                ],
+                "parameters": [
+                    {
+                        "name": "id_paciente",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paciente encontrado.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PacienteResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Actualiza datos de un paciente",
+                "tags": [
+                    "Pacientes"
+                ],
+                "parameters": [
+                    {
+                        "name": "id_paciente",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PacienteInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Paciente modificado con éxito.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PacienteResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Borrado lógico (Desactiva al usuario)",
+                "tags": [
+                    "Pacientes"
+                ],
+                "parameters": [
+                    {
+                        "name": "id_paciente",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paciente eliminado con éxito."
+                    }
+                }
+            }
+        }
+    }
+}

@@ -54,128 +54,28 @@ const buscarTodasTransformararQueryParams = (req, res, next) => {
 const transformarDTO = (req, res, next) => {
     req.dto = new PacienteCreateDto(req.body);
     next();
-};
-/**
- * @swagger
- * components:
- *   schemas:
- *     Paciente:
- *       type: object
- *       required:
- *         - idUsuario
- *         - idObraSocial
- *       properties:
- *         idUsuario:
- *           type: integer
- *           description: ID del usuario asociado a este paciente
- *         idObraSocial:
- *           type: integer
- *           description: ID de la obra social del paciente
- *       example:
- *         idUsuario: 5
- *         idObraSocial: 1
- */
+};
 
-/**
- * @swagger
- * /api/v2/pacientes:
- *   get:
- *     summary: Obtiene la lista de pacientes (con datos de usuario y obra social)
- *     tags: [Pacientes]
- *     responses:
- *       200:
- *         description: Lista de pacientes
- */
 router.get("/", 
     [validarQueryParams, buscarTodasTransformararQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/pacientes/{id_paciente}:
- *   get:
- *     summary: Obtiene un paciente por ID
- *     tags: [Pacientes]
- *     parameters:
- *       - name: id_paciente
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Paciente encontrado
- */
 router.get("/:id_paciente", 
     validarId, 
     controller.buscarPorId.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/pacientes:
- *   post:
- *     summary: Registra un nuevo paciente
- *     tags: [Pacientes]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Paciente'
- *     responses:
- *       201:
- *         description: Creado con éxito
- */
 router.post("/", 
     [validarPayload, transformarDTO], 
     controller.crear.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/pacientes/{id_paciente}:
- *   put:
- *     summary: Actualiza datos de un paciente
- *     tags: [Pacientes]
- *     parameters:
- *       - name: id_paciente
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Paciente'
- *     responses:
- *       200:
- *         description: Modificado con éxito
- */
 router.put("/:id_paciente", 
     [validarId, validarPayload, transformarDTO], 
     controller.modificar.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/pacientes/{id_paciente}:
- *   delete:
- *     summary: Borrado lógico (Desactiva al usuario)
- *     tags: [Pacientes]
- *     parameters:
- *       - name: id_paciente
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Eliminado con éxito
- */
 router.delete("/:id_paciente", 
     validarId, 
     controller.borrar.bind(controller)
