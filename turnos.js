@@ -4,6 +4,8 @@ import helmet from "helmet";
 import testConexion from "./db/test-conexion.js";
 import fs from "fs";
 import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocs from "./documentacion/opcionesSwagger.js";
 import { engine } from 'express-handlebars';
 
 import { validateContentType } from "./middlewares/validateContentType.js";
@@ -38,6 +40,7 @@ app.use(cors(corsOptions));
 app.use(helmet());
 
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use('/', indexRutas);
 

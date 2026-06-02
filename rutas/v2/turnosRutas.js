@@ -49,165 +49,28 @@ const findAllTransformarQueryParams = (req, res, next) => {
 const transformDTO = (req, res, next) => {
     req.dto = new TurnoCreateDto(req.body);
     next();
-};
-/**
- * @swagger
- * components:
- *   schemas:
- *     Turno:
- *       type: object
- *       required:
- *         - idMedico
- *         - idPaciente
- *         - idObraSocial
- *         - fechaHora
- *       properties:
- *         idMedico:
- *           type: integer
- *         idPaciente:
- *           type: integer
- *         idObraSocial:
- *           type: integer
- *         fechaHora:
- *           type: string
- *           format: date-time
- *       example:
- *         idMedico: 1
- *         idPaciente: 1
- *         idObraSocial: 1
- *         fechaHora: "2026-06-01 15:30:00"
- *     TurnoResponse:
- *       type: object
- *       properties:
- *         idTurnoReserva:
- *           type: integer
- *         idMedico:
- *           type: integer
- *         medicoNombre:
- *           type: string
- *         idPaciente:
- *           type: integer
- *         pacienteNombre:
- *           type: string
- *         idObraSocial:
- *           type: integer
- *         obraSocialNombre:
- *           type: string
- *         fechaHora:
- *           type: string
- *           format: date-time
- *         valorTotal:
- *           type: number
- *           format: float
- *         atendido:
- *           type: boolean
- *       example:
- *         idTurnoReserva: 1
- *         idMedico: 1
- *         medicoNombre: "Lopez Marcelo"
- *         idPaciente: 1
- *         pacienteNombre: "Lopez Jacinto"
- *         idObraSocial: 1
- *         obraSocialNombre: "Jerárquicos"
- *         fechaHora: "2026-04-01 17:00:00"
- *         valorTotal: 4500.00
- *         atendido: false
- */
+};
 
-/**
- * @swagger
- * /api/v2/turnos-reservas:
- *   get:
- *     summary: Obtiene la lista de turnos y reservas
- *     tags: [Turnos]
- *     responses:
- *       200:
- *         description: Lista de turnos
- */
 router.get("/", 
     [validarQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/turnos-reservas/{id_turno}:
- *   get:
- *     summary: Obtiene un turno por ID
- *     tags: [Turnos]
- *     parameters:
- *       - name: id_turno
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Turno encontrado
- */
 router.get("/:id_turno", 
     validarId, 
     controller.buscarPorId.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/turnos-reservas:
- *   post:
- *     summary: Registra un nuevo turno (Calcula el costo y usa transacciones)
- *     tags: [Turnos]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Turno'
- *     responses:
- *       201:
- *         description: Turno creado
- */
 router.post("/", 
     [validarPayload, transformDTO], 
     controller.crear.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/turnos-reservas/{id_turno}/atendido:
- *   patch:
- *     summary: Marca un turno como atendido
- *     tags: [Turnos]
- *     parameters:
- *       - name: id_turno
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Turno actualizado
- */
 router.patch("/:id_turno/atendido", 
     validarId, 
     controller.marcarAtendido.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/turnos-reservas/{id_turno}:
- *   delete:
- *     summary: Cancela/Elimina un turno (Soft Delete)
- *     tags: [Turnos]
- *     parameters:
- *       - name: id_turno
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Turno eliminado
- */
 router.delete("/:id_turno", 
     validarId, 
     controller.borrar.bind(controller)

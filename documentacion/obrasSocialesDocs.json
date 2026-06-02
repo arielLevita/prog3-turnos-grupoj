@@ -1,0 +1,211 @@
+{
+    "components": {
+        "schemas": {
+            "ObraSocialInput": {
+                "type": "object",
+                "required": [
+                    "nombre",
+                    "descripcion"
+                ],
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "description": "Nombre de la obra social."
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "description": "Descripción o detalles adicionales."
+                    },
+                    "porcentajeDescuento": {
+                        "type": "number",
+                        "format": "float",
+                        "description": "Porcentaje de descuento aplicado (0 a 100)."
+                    },
+                    "esParticular": {
+                        "type": "boolean",
+                        "description": "Indica si es atención particular."
+                    }
+                },
+                "example": {
+                    "nombre": "OSUNER",
+                    "descripcion": "Obra Social de la Universidad",
+                    "porcentajeDescuento": 10.5,
+                    "esParticular": false
+                }
+            },
+            "ObraSocialResponse": {
+                "type": "object",
+                "properties": {
+                    "idObraSocial": {
+                        "type": "integer",
+                        "description": "ID único de la obra social."
+                    },
+                    "nombre": {
+                        "type": "string"
+                    },
+                    "descripcion": {
+                        "type": "string"
+                    },
+                    "porcentajeDescuento": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "esParticular": {
+                        "type": "boolean"
+                    }
+                },
+                "example": {
+                    "idObraSocial": 1,
+                    "nombre": "OSUNER",
+                    "descripcion": "Obra Social de la Universidad",
+                    "porcentajeDescuento": 10.5,
+                    "esParticular": false
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/v2/obras-sociales": {
+            "get": {
+                "summary": "Obtiene la lista de obras sociales",
+                "tags": [
+                    "Obras Sociales"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de obras sociales obtenida con éxito.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ObraSocialResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Crea una nueva obra social",
+                "tags": [
+                    "Obras Sociales"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ObraSocialInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Obra social creada con éxito.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ObraSocialResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/obras-sociales/{id_obra_social}": {
+            "get": {
+                "summary": "Obtiene una obra social por ID",
+                "tags": [
+                    "Obras Sociales"
+                ],
+                "parameters": [
+                    {
+                        "name": "id_obra_social",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Obra social encontrada.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ObraSocialResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Actualiza una obra social",
+                "tags": [
+                    "Obras Sociales"
+                ],
+                "parameters": [
+                    {
+                        "name": "id_obra_social",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ObraSocialInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Obra social modificada con éxito.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ObraSocialResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Borrado lógico de una obra social",
+                "tags": [
+                    "Obras Sociales"
+                ],
+                "parameters": [
+                    {
+                        "name": "id_obra_social",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Obra social eliminada con éxito."
+                    }
+                }
+            }
+        }
+    }
+}
