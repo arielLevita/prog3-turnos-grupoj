@@ -38,6 +38,34 @@ export default class TurnosDb {
         return rows;
     }
 
+    turnosDeUnMedico = async (id_usuario) => {
+        const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
+                             CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,
+                             CONCAT(vp.apellido, ' ', vp.nombres) AS paciente_nombre,
+                             os.nombre AS obra_social_nombre
+                      FROM turnos_reservas t
+                      JOIN v_medicos vm ON t.id_medico = vm.id_medico
+                      JOIN v_pacientes vp ON t.id_paciente = vp.id_paciente
+                      JOIN obras_sociales os ON t.id_obra_social = os.id_obra_social
+                      WHERE t.activo = 1 AND vm.id_usuario = ?`;
+        const [rows] = await pool.query(strSql, [id_usuario]);
+        return rows;
+    }
+
+    turnosDeUnPaciente = async (id_usuario) => {
+        const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
+                             CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,
+                             CONCAT(vp.apellido, ' ', vp.nombres) AS paciente_nombre,
+                             os.nombre AS obra_social_nombre
+                      FROM turnos_reservas t
+                      JOIN v_medicos vm ON t.id_medico = vm.id_medico
+                      JOIN v_pacientes vp ON t.id_paciente = vp.id_paciente
+                      JOIN obras_sociales os ON t.id_obra_social = os.id_obra_social
+                      WHERE t.activo = 1 AND vp.id_usuario = ?`;
+        const [rows] = await pool.query(strSql, [id_usuario]);
+        return rows;
+    }
+
     buscarPorId = async (id) => {
         const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
                                CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,

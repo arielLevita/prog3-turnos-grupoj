@@ -1,10 +1,10 @@
-
 import express from 'express';
 import { query, param, body } from "express-validator";
 import apicache from "apicache";
 import PacientesControlador from '../../controladores/pacientesControlador.js';
-import PacienteCreateDto from '../../dtos/pacienteCreateDto.js';
+import PacienteCreateDto from '../../dtos/pacienteCreateDTO.js';
 import validarCampos from '../../middlewares/validarCampos.js'; 
+import autorizarUsuarios from '../../middlewares/autorizarUsuarios.js';
 
 const cache = apicache.middleware;
 const controller = new PacientesControlador();
@@ -57,27 +57,27 @@ const transformarDTO = (req, res, next) => {
 };
 
 router.get("/", 
-    [validarQueryParams, buscarTodasTransformararQueryParams], 
+    [autorizarUsuarios([3]), validarQueryParams, buscarTodasTransformararQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
 router.get("/:id_paciente", 
-    validarId, 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.buscarPorId.bind(controller)
 );
 
 router.post("/", 
-    [validarPayload, transformarDTO], 
+    [autorizarUsuarios([3]), ...validarPayload, transformarDTO], 
     controller.crear.bind(controller)
 );
 
 router.put("/:id_paciente", 
-    [validarId, validarPayload, transformarDTO], 
+    [autorizarUsuarios([3]), ...validarId, ...validarPayload, transformarDTO], 
     controller.modificar.bind(controller)
 );
 
 router.delete("/:id_paciente", 
-    validarId, 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.borrar.bind(controller)
 );
 

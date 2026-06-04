@@ -4,6 +4,7 @@ import apicache from "apicache";
 import TurnosControlador from '../../controladores/turnosControlador.js';
 import TurnoCreateDto from '../../dtos/turnoCreateDto.js';
 import validarCampos from '../../middlewares/validarCampos.js'; 
+import autorizarUsuarios from '../../middlewares/autorizarUsuarios.js';
 
 const cache = apicache.middleware;
 const controller = new TurnosControlador();
@@ -52,27 +53,27 @@ const transformDTO = (req, res, next) => {
 };
 
 router.get("/", 
-    [validarQueryParams, findAllTransformarQueryParams], 
+    [autorizarUsuarios([1, 2]), validarQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
 router.get("/:id_turno", 
-    validarId, 
+    [autorizarUsuarios([1, 2]), ...validarId], 
     controller.buscarPorId.bind(controller)
 );
 
 router.post("/", 
-    [validarPayload, transformDTO], 
+    [autorizarUsuarios([2, 3]), ...validarPayload, transformDTO], 
     controller.crear.bind(controller)
 );
 
 router.patch("/:id_turno/atendido", 
-    validarId, 
+    [autorizarUsuarios([1]), ...validarId], 
     controller.marcarAtendido.bind(controller)
 );
 
 router.delete("/:id_turno", 
-    validarId, 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.borrar.bind(controller)
 );
 

@@ -8,6 +8,7 @@
             <tr>
                 <th>DNI / ID</th>
                 <th>Nombre Completo</th>
+                <th>Contacto</th>
                 <th>Obra Social Asignada</th>
             </tr>
         </thead>
@@ -16,7 +17,8 @@
             <tr>
                 <td><strong>#{{this.idPaciente}}</strong></td>
                 <td>{{this.apellido}}, {{this.nombres}}</td>
-                <td><span class="badge badge-done">{{this.descripcionObraSocial}}</span></td>
+                <td>{{this.email}}</td>
+                <td><span class="badge badge-info">{{this.descripcionObraSocial}}</span></td>
             </tr>
             {{/each}}
         </tbody>

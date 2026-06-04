@@ -12,9 +12,16 @@ export default class TurnosServicio {
         this.pacientesServicio = new PacientesServicio();
     }
 
-    buscarTodas = async (filters, limit, offset, order) => {
-        const turnosCrud = await this.turnosDb.buscarTodas(filters, limit, offset, order);
-        return turnosCrud.map(turno => new TurnoResponseDto(turno));
+    buscarTodas = async (usuario, filters, limit, offset, order) => {
+        let listaTurnos = [];
+
+        if (usuario.rol === 1) {
+            listaTurnos = await this.turnosDb.turnosDeUnMedico(usuario.idUsuario);
+        } else {
+            listaTurnos = await this.turnosDb.turnosDeUnPaciente(usuario.idUsuario);
+        }
+
+        return listaTurnos.map(turno => new TurnoResponseDto(turno));
     }
 
     buscarPorId = async (id) => {
@@ -36,7 +43,7 @@ export default class TurnosServicio {
         turnoCreateDto.idObraSocial = paciente.idObraSocial;
 
         let valorTotalCalculado = 0;
-        
+
         const valorConsulta = medico.valorConsulta;
         const porcentajeDescuento = obraSocial.porcentajeDescuento;
 

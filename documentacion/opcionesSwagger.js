@@ -19,6 +19,13 @@ const swaggerOptions = {
         servers: [{ url: `http://localhost:${process.env.PUERTO || 3007}` }],
         
         components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                }
+            },
             schemas: {
                 ...usuariosDocs.components.schemas,
                 ...turnosDocs.components.schemas,
@@ -28,6 +35,9 @@ const swaggerOptions = {
                 ...medicosDocs.components.schemas
             }
         },
+        security: [{
+            bearerAuth: []
+        }],
         paths: {
             ...usuariosDocs.paths,
             ...turnosDocs.paths,

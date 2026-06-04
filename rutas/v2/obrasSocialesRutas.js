@@ -4,6 +4,7 @@ import apicache from "apicache";
 import ObrasSocialesControlador from '../../controladores/obrasSocialesControlador.js';
 import ObraSocialCreateDto from '../../dtos/obraSocialCreateDto.js';
 import validarCampos from '../../middlewares/validarCampos.js'; 
+import autorizarUsuarios from '../../middlewares/autorizarUsuarios.js';
 
 const cache = apicache.middleware;
 const controller = new ObrasSocialesControlador();
@@ -59,27 +60,27 @@ const transformDTO = (req, res, next) => {
 };
 
 router.get("/", 
-    [validarQueryParams, findAllTransformarQueryParams, cache("5 minutes")], 
+    [autorizarUsuarios([3]), validarQueryParams, findAllTransformarQueryParams, cache("5 minutes")], 
     controller.buscarTodas.bind(controller)
 );
 
 router.get("/:id_obra_social", 
-    validarId, 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.buscarPorId.bind(controller)
 );
 
 router.post("/", 
-    [validarPayload, transformDTO], 
+    [autorizarUsuarios([3]), ...validarPayload, transformDTO], 
     controller.crear.bind(controller)
 );
 
 router.put("/:id_obra_social", 
-    [validarId, validarPayload, transformDTO], 
+    [autorizarUsuarios([3]), ...validarId, ...validarPayload, transformDTO], 
     controller.modificar.bind(controller)
 );
 
 router.delete("/:id_obra_social", 
-    validarId, 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.borrar.bind(controller)
 );
 

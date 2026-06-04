@@ -1,13 +1,16 @@
 import express from 'express';
-import TurnosServicio from '../../servicios/turnosServicio.js';
+import TurnosDb from '../../db/turnosDb.js';
+import TurnoResponseDto from '../../dtos/turnoResponseDto.js';
 
 const router = express.Router();
-const turnosServicio = new TurnosServicio();
+const turnosDb = new TurnosDb();
 
 router.get('/', async (req, res) => {
     try {
 
-        const turnos = await turnosServicio.buscarTodas();
+        // Obtenemos directo de DB porque la ruta Web no tiene usuario logueado para pasarle al Servicio
+        const turnosCrud = await turnosDb.buscarTodas();
+        const turnos = turnosCrud.map(t => new TurnoResponseDto(t));
 
         const turnosParaVista = JSON.parse(JSON.stringify(turnos));
 

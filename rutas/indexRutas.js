@@ -1,4 +1,5 @@
 import express from 'express';
+import passport from 'passport';
 
 import { router as v1EspecialidadesRutas } from "./v1/especialidadesRutas.js";
 
@@ -8,6 +9,7 @@ import { router as v2UsuariosRutas } from "./v2/usuariosRutas.js";
 import { router as v2PacientesRutas } from "./v2/pacientesRutas.js";
 import { router as v2TurnosRutas } from "./v2/turnosRutas.js";
 import { router as v2MedicosRutas } from "./v2/medicosRutas.js";
+import { router as v2AuthRutas } from "./v2/authRutas.js";
 
 import { router as turnosWebRutas } from "./web/turnosWebRutas.js";
 import { router as medicosWebRutas } from "./web/medicosWebRutas.js";
@@ -21,12 +23,16 @@ router.get('/', (req, res) => {
 
 router.use('/api/v1/especialidades', v1EspecialidadesRutas);
 
-router.use('/api/v2/especialidades', v2EspecialidadesRutas);
-router.use('/api/v2/usuarios', v2UsuariosRutas);
-router.use('/api/v2/medicos', v2MedicosRutas);
-router.use('/api/v2/turnos', v2TurnosRutas);
-router.use('/api/v2/pacientes', v2PacientesRutas);
-router.use('/api/v2/obras-sociales', v2ObrasSocialesRutas);
+router.use('/api/v2/auth', v2AuthRutas);
+
+const verificarToken = passport.authenticate('jwt', { session: false });
+
+router.use('/api/v2/especialidades', verificarToken, v2EspecialidadesRutas);
+router.use('/api/v2/usuarios', verificarToken, v2UsuariosRutas);
+router.use('/api/v2/medicos', verificarToken, v2MedicosRutas);
+router.use('/api/v2/turnos', verificarToken, v2TurnosRutas);
+router.use('/api/v2/pacientes', verificarToken, v2PacientesRutas);
+router.use('/api/v2/obras-sociales', verificarToken, v2ObrasSocialesRutas);
 
 router.use('/web/turnos', turnosWebRutas);
 router.use('/web/medicos', medicosWebRutas);
