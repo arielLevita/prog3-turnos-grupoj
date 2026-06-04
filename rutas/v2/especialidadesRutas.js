@@ -4,6 +4,7 @@ import { query, param, body } from "express-validator";
 import apicache from "apicache";
 import EspecialidadesControlador from '../../controladores/especialidadesControlador.js';
 import EspecialidadCreateDto from '../../dtos/especialidadCreateDto.js';
+import autorizarUsuarios from '../../middlewares/autorizarUsuarios.js';
 
 const cache = apicache.middleware;
 const controller = new EspecialidadesControlador();
@@ -52,27 +53,27 @@ const transformarDTO = (req, res, next) => {
 };
 
 router.get("/", 
-    [validarQueryParams, buscarTodasTransformarQueryParams, cache("5 minutes")], 
+    [autorizarUsuarios([2, 3]), validarQueryParams, buscarTodasTransformarQueryParams, cache("5 minutes")], 
     controller.buscarTodas.bind(controller)
 );
 
 router.get("/:id_especialidad", 
-    validarId, 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.buscarPorId.bind(controller)
 );
 
 router.post("/", 
-    [validarPayload, transformarDTO], 
+    [autorizarUsuarios([3]), ...validarPayload, transformarDTO], 
     controller.crear.bind(controller)
 );
 
 router.put("/:id_especialidad", 
-    [validarId, validarPayload, transformarDTO], 
+    [autorizarUsuarios([3]), ...validarId, ...validarPayload, transformarDTO], 
     controller.modificar.bind(controller)
 );
 
 router.delete("/:id_especialidad", 
-    validarId, 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.borrar.bind(controller)
 );
 

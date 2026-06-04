@@ -8,7 +8,7 @@ export default class TurnosControlador {
     buscarTodas = async (req, res) => {
         try {
             const { filter, limit, offset, order } = req.query;
-            const turnos = await this.servicio.buscarTodas(filter, limit, offset, order);
+            const turnos = await this.servicio.buscarTodas(req.user, filter, limit, offset, order);
             res.status(200).json(turnos);
         } catch (error) {
             res.status(500).json({ error: 'Error interno del servidor' });

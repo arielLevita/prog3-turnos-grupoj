@@ -11,6 +11,10 @@ import { engine } from 'express-handlebars';
 import { validateContentType } from "./middlewares/validateContentType.js";
 import indexRutas from './rutas/indexRutas.js';
 
+import passport from "passport";
+import { estrategia, validacion } from "./config/passport.js";
+
+
 const app = express();
 
 await testConexion();
@@ -24,6 +28,10 @@ app.use(morgan('combined', {stream: log}));
 
 app.use(validateContentType);
 app.use(express.json());
+
+passport.use(estrategia);
+passport.use(validacion);
+app.use(passport.initialize());
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');

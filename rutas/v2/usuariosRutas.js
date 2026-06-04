@@ -4,6 +4,7 @@ import apicache from "apicache";
 import UsuariosControlador from '../../controladores/usuariosControlador.js';
 import UsuarioCreateDto from '../../dtos/usuarioCreateDto.js';
 import validarCampos from '../../middlewares/validarCampos.js';
+import autorizarUsuarios from '../../middlewares/autorizarUsuarios.js';
 
 const cache = apicache.middleware;
 const controller = new UsuariosControlador();
@@ -64,28 +65,28 @@ const transformDTO = (req, res, next) => {
     next();
 };
 
-router.get("/",
-    [validarQueryParams, findAllTransformarQueryParams],
+router.get("/", 
+    [autorizarUsuarios([3]), validarQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
-router.get("/:id_usuario",
-    validarId,
+router.get("/:id_usuario", 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.buscarPorId.bind(controller)
 );
 
-router.post("/",
-    [validarPayload, transformDTO],
+router.post("/", 
+    [autorizarUsuarios([3]), ...validarPayload, transformDTO], 
     controller.crear.bind(controller)
 );
 
-router.put("/:id_usuario",
-    [validarId, validarPayload, transformDTO],
+router.put("/:id_usuario", 
+    [autorizarUsuarios([3]), ...validarId, ...validarPayload, transformDTO], 
     controller.modificar.bind(controller)
 );
 
-router.delete("/:id_usuario",
-    validarId,
+router.delete("/:id_usuario", 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.borrar.bind(controller)
 );
 
