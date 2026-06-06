@@ -1,0 +1,50 @@
+{
+  "components": {
+    "schemas": {
+      "EstadisticaResponse": {
+        "type": "object",
+        "properties": {
+          "obraSocial": { "type": "string" },
+          "cantidad": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v2/estadisticas/obras-sociales": {
+      "get": {
+        "summary": "Obtiene estadísticas de turnos por obra social",
+        "tags": ["Estadísticas"],
+        "parameters": [
+          {
+            "name": "fecha_desde",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "fecha_hasta",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de estadísticas devuelta con éxito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EstadisticaResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
