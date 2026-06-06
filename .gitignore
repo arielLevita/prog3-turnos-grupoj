@@ -1,6 +1,7 @@
 node_modules/
 .env
 Programacion/
+scripts_bd/
 
 # Bruno API Client
 bruno/
@@ -8,3 +9,6 @@ bruno/
 # Logs
 *.log
 accesos.log
+
+# 
+machete_estadisticas.md

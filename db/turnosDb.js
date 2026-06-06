@@ -3,7 +3,7 @@ import pool from "./conexion.js";
 export default class TurnosDb {
     
     buscarTodas = async (filters = null, limit = 0, offset = 0, order = null) => {
-        let strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atendido,
+        let strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
                              CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,
                              CONCAT(vp.apellido, ' ', vp.nombres) AS paciente_nombre,
                              os.nombre AS obra_social_nombre
@@ -39,7 +39,7 @@ export default class TurnosDb {
     }
 
     turnosDeUnMedico = async (id_usuario) => {
-        const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atendido,
+        const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
                              CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,
                              CONCAT(vp.apellido, ' ', vp.nombres) AS paciente_nombre,
                              os.nombre AS obra_social_nombre
@@ -53,7 +53,7 @@ export default class TurnosDb {
     }
 
     turnosDeUnPaciente = async (id_usuario) => {
-        const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atendido,
+        const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
                              CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,
                              CONCAT(vp.apellido, ' ', vp.nombres) AS paciente_nombre,
                              os.nombre AS obra_social_nombre
@@ -67,7 +67,7 @@ export default class TurnosDb {
     }
 
     buscarPorId = async (id) => {
-        const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atendido,
+        const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
                                CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,
                                CONCAT(vp.apellido, ' ', vp.nombres) AS paciente_nombre,
                                os.nombre AS obra_social_nombre
@@ -87,7 +87,7 @@ export default class TurnosDb {
             await conexion.beginTransaction();
 
             const strSql = `INSERT INTO turnos_reservas 
-                            (id_medico, id_paciente, id_obra_social, fecha_hora, valor_total, atendido) 
+                            (id_medico, id_paciente, id_obra_social, fecha_hora, valor_total, atentido) 
                             VALUES (?, ?, ?, ?, ?, 0)`;
             
             const [resultado] = await conexion.execute(strSql, [
