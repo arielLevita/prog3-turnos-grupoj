@@ -9,15 +9,9 @@ const estadisticasControlador = new EstadisticasControlador();
 router.get(
   "/:tipo",
   [
-    param("tipo", "El tipo de reporte es obligatorio").notEmpty(),
-    query(
-      "fecha_desde",
-      "La fecha de inicio es obligatoria y debe ser válida",
-    ).isDate(),
-    query(
-      "fecha_hasta",
-      "La fecha de fin es obligatoria y debe ser válida",
-    ).isDate(),
+    param("tipo").notEmpty(),
+    query("fecha_desde").isDate(),
+    query("fecha_hasta").isDate(),
     validarCampos,
   ],
   estadisticasControlador.obtenerReporte,

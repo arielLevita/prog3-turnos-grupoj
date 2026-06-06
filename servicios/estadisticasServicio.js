@@ -1,11 +1,23 @@
-import Estadisticas from "../db/estadisticasDb.js";
+import pool from "../db/conexion.js";
 
 export default class EstadisticasServicio {
-  constructor() {
-    this.estadisticas = new Estadisticas();
-  }
+  obtenerEstadisticas = async (reporte, params) => {
+    let spName = "";
 
-  porObraSocial = async (fecha_desde, fecha_hasta) => {
-    return await this.estadisticas.porObraSocial(fecha_desde, fecha_hasta);
+    switch (reporte) {
+      case "obras-sociales":
+        spName = "pa_estadisticas_obras_sociales";
+      case "medicos":
+        spName = "pa_estadisticas_medicos";
+        break;
+      case "especialidades":
+        spName = "pa_estadisticas_especialidades";
+        break;
+      default:
+        throw new Error("Reporte no encontrado");
+    }
+
+    const [resultados] = await pool.query(`CALL ${spName}(?, ?)`, params);
+    return resultados[0];
   };
 }
