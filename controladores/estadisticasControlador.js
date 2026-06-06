@@ -5,24 +5,25 @@ export default class EstadisticasControlador {
     this.estadisticas = new EstadisticasServicio();
   }
 
-  porObraSocial = async (req, res) => {
+  obtenerReporte = async (req, res) => {
     try {
+      const { tipo } = req.params;
       const { fecha_desde, fecha_hasta } = req.query;
 
-      const estadisticas = await this.estadisticas.porObraSocial(
+      const datos = await this.estadisticas.obtenerEstadisticas(tipo, [
         fecha_desde,
         fecha_hasta,
-      );
+      ]);
 
-      if (estadisticas.length === 0) {
+      if (!datos || datos.length === 0) {
         return res
           .status(404)
-          .json({ estado: false, msg: "No hay datos en ese rango de fechas" });
+          .json({ estado: false, msg: "No hay datos disponibles" });
       }
 
-      res.status(200).json(estadisticas);
+      res.status(200).json(datos);
     } catch (error) {
-      console.log(`Error en GET /estadisticas/obras-sociales ${error}`);
+      console.log(`Error en GET /estadisticas/${req.params.tipo}: ${error}`);
       res
         .status(500)
         .json({ estado: false, msg: "Error interno del servidor" });

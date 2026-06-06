@@ -1,5 +1,5 @@
 import express from "express";
-import { query } from "express-validator";
+import { query, param } from "express-validator";
 import validarCampos from "../../middlewares/validarCampos.js";
 import EstadisticasControlador from "../../controladores/estadisticasControlador.js";
 
@@ -7,8 +7,9 @@ const router = express.Router();
 const estadisticasControlador = new EstadisticasControlador();
 
 router.get(
-  "/obras-sociales",
+  "/:tipo",
   [
+    param("tipo", "El tipo de reporte es obligatorio").notEmpty(),
     query(
       "fecha_desde",
       "La fecha de inicio es obligatoria y debe ser válida",
@@ -19,7 +20,7 @@ router.get(
     ).isDate(),
     validarCampos,
   ],
-  estadisticasControlador.porObraSocial,
+  estadisticasControlador.obtenerReporte,
 );
 
 export { router };
