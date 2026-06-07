@@ -51,7 +51,7 @@ app.use(helmet());
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use("/api/v2/estadisticas", estadisticasRutas);
+
 
 app.use('/', indexRutas);
 

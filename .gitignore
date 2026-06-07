@@ -2,7 +2,7 @@ node_modules/
 .env
 Programacion/
 scripts_bd/
-
+tests/
 # Bruno API Client
 bruno/
 
