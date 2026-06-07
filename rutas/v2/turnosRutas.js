@@ -18,7 +18,7 @@ const validarId = [
 const validarQueryParams = [
     query('id_medico').optional().isInt().toInt(),
     query('id_paciente').optional().isInt().toInt(),
-    query('atentido').optional().isInt({ min: 0, max: 1 }).toInt(),
+    query('atendido').optional().isInt({ min: 0, max: 1 }).toInt(),
     query('limit').optional().isInt({ min: 0 }).toInt(),
     query('offset').optional().isInt({ min: 0 }).toInt(),
     validarCampos
@@ -37,11 +37,11 @@ const findAllTransformarQueryParams = (req, res, next) => {
     req.query.offset = req.query.offset ? Number(req.query.offset) : 0;
 
     const filterObj = {};
-    const { id_medico, id_paciente, atentido } = req.query;
+    const { id_medico, id_paciente, atendido } = req.query;
 
     if (id_medico) filterObj.id_medico = id_medico;
     if (id_paciente) filterObj.id_paciente = id_paciente;
-    if (atentido !== undefined) filterObj.atentido = atentido;
+    if (atendido !== undefined) filterObj.atendido = atendido;
 
     req.query.filter = filterObj;
     next();

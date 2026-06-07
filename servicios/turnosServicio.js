@@ -61,7 +61,7 @@ export default class TurnosServicio {
         const existe = await this.turnosDb.buscarPorId(id);
         if (!existe) return null;
 
-        await this.turnosDb.modificar(id, "atentido = ?", [1]);
+        await this.turnosDb.modificar(id, "atendido = ?", [1]);
         return id;
     }
 

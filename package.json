@@ -19,6 +19,7 @@
   "homepage": "https://github.com/arielLevita/prog3-turnos-grupoj#readme",
   "dependencies": {
     "apicache": "^1.6.3",
+    "cores": "^0.8.5",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-handlebars": "^9.0.1",

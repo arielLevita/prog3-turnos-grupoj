@@ -7,24 +7,28 @@ import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocs from "./documentacion/opcionesSwagger.js";
 import { engine } from 'express-handlebars';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 import { validateContentType } from "./middlewares/validateContentType.js";
 import indexRutas from './rutas/indexRutas.js';
 
 import passport from "passport";
 import { estrategia, validacion } from "./config/passport.js";
-
+import { router as v1EspecialidadesRutas } from './rutas/v1/especialidadesRutas.js';
 
 const app = express();
 
 await testConexion();
 
-let log = fs.createWriteStream('./accesos.log', { 
+let log = fs.createWriteStream('./accesos.log', {
     flags: 'a'
 });
 
 app.use(morgan('dev'));
-app.use(morgan('combined', {stream: log}));
+app.use(morgan('combined', { stream: log }));
 
 app.use(validateContentType);
 app.use(express.json());
@@ -41,7 +45,7 @@ app.use(express.static('public'));
 
 const corsOptions = {
     origin: ['http://localhost:3000', 'http://localhost:5173'], //* Acá van las urls del Front-end.
-    optionsSuccessStatus: 200, 
+    optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
@@ -58,7 +62,7 @@ app.listen(PUERTO, () => {
     console.log(`Servidor iniciado OK en el puerto: ${PUERTO}`);
     console.log(`Documentación disponible en http://localhost:${PUERTO}/api-docs`);
     console.log(`Vistas disponibles en http://localhost:${PUERTO}/web/turnos`); //TODO Cambiar por la vista de login
-}); 
+});
 
 // Handlebars
 app.engine("handlebars", engine());
