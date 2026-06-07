@@ -1,6 +1,6 @@
 import express from 'express';
-import passport from 'passport';
 
+import { autenticarJWT } from '../middlewares/autenticarJWT.js';
 import { router as v1EspecialidadesRutas } from "./v1/especialidadesRutas.js";
 
 import { router as v2EspecialidadesRutas } from "./v2/especialidadesRutas.js";
@@ -25,7 +25,7 @@ router.use('/api/v1/especialidades', v1EspecialidadesRutas);
 
 router.use('/api/v2/auth', v2AuthRutas);
 
-const verificarToken = passport.authenticate('jwt', { session: false });
+const verificarToken = autenticarJWT;
 
 router.use('/api/v2/especialidades', verificarToken, v2EspecialidadesRutas);
 router.use('/api/v2/usuarios', verificarToken, v2UsuariosRutas);
