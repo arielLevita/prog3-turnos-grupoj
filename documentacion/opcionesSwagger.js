@@ -7,6 +7,7 @@ const especialidadesDocs = JSON.parse(fs.readFileSync(new URL('./especialidadesD
 const obrasSocialesDocs = JSON.parse(fs.readFileSync(new URL('./obrasSocialesDocs.json', import.meta.url), 'utf-8'));
 const pacientesDocs = JSON.parse(fs.readFileSync(new URL('./pacientesDocs.json', import.meta.url), 'utf-8'));
 const medicosDocs = JSON.parse(fs.readFileSync(new URL('./medicosDocs.json', import.meta.url), 'utf-8'));
+const authDocs = JSON.parse(fs.readFileSync(new URL('./authDocs.json', import.meta.url), 'utf-8'));
 
 const swaggerOptions = {
     definition: {
@@ -44,7 +45,8 @@ const swaggerOptions = {
             ...especialidadesDocs.paths,
             ...obrasSocialesDocs.paths,
             ...pacientesDocs.paths,
-            ...medicosDocs.paths
+            ...medicosDocs.paths,
+            ...authDocs.paths
         }
     },
     apis: [],
