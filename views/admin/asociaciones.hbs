@@ -1,0 +1,65 @@
+<h2 class="fw-bold mb-4">Gestión de Asociaciones</h2>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100 border-primary">
+            <div class="card-header bg-primary text-white fw-bold">
+                👨‍⚕️ Asociar Médico a Obra Social
+            </div>
+            <div class="card-body">
+                <form action="/admin/asociar-medico" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Seleccionar Médico</label>
+                        <select class="form-select" name="id_medico" required>
+                            <option value="" disabled selected>Elegí un médico...</option>
+                            {{#each medicos}}
+                            <option value="{{this.id_medico}}">{{this.apellido}}, {{this.nombres}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Seleccionar Obra Social</label>
+                        <select class="form-select" name="id_obra_social" required>
+                            <option value="" disabled selected>Elegí una obra social...</option>
+                            {{#each obrasSociales}}
+                            <option value="{{this.id_obra_social}}">{{this.nombre}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">Guardar Asociación</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100 border-success">
+            <div class="card-header bg-success text-white fw-bold">
+                👤 Asociar Paciente a Obra Social
+            </div>
+            <div class="card-body">
+                <form action="/admin/asociar-paciente" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Seleccionar Paciente</label>
+                        <select class="form-select" name="id_paciente" required>
+                            <option value="" disabled selected>Elegí un paciente...</option>
+                            {{#each pacientes}}
+                            <option value="{{this.id_paciente}}">{{this.apellido}}, {{this.nombres}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Seleccionar Obra Social</label>
+                        <select class="form-select" name="id_obra_social" required>
+                            <option value="" disabled selected>Elegí una obra social...</option>
+                            {{#each obrasSociales}}
+                            <option value="{{this.id_obra_social}}">{{this.nombre}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 fw-bold">Actualizar Paciente</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

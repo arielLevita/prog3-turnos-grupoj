@@ -1,0 +1,84 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Gestión de Obras Sociales</h2>
+    <button class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalObraSocial">+ Nueva Obra
+        Social</button>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descuento</th>
+                        <th>Tipo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each obrasSociales}}
+                    <tr>
+                        <td>{{this.id_obra_social}}</td>
+                        <td>{{this.nombre}}</td>
+                        <td>{{this.porcentaje_descuento}}%</td>
+                        <td>
+                            {{#if this.es_particular}}
+                            <span class="badge bg-secondary">Particular</span>
+                            {{else}}
+                            <span class="badge bg-info text-dark">Prepaga/OS</span>
+                            {{/if}}
+                        </td>
+                        <td>
+                            <a href="/admin/obras-sociales/editar/{{this.id_obra_social}}"
+                                class="btn btn-sm btn-outline-warning">Editar</a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalObraSocial" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Agregar Obra Social</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/admin/obras-sociales" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="2"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="porcentaje_descuento" class="form-label">% Descuento</label>
+                            <input type="number" step="0.01" class="form-control" id="porcentaje_descuento"
+                                name="porcentaje_descuento" value="0.00" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="es_particular" class="form-label">¿Es Particular?</label>
+                            <select class="form-select" id="es_particular" name="es_particular">
+                                <option value="0">No (Es Obra Social)</option>
+                                <option value="1">Sí (Es Particular)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

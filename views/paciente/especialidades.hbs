@@ -1,0 +1,21 @@
+<h2 class="fw-bold mb-4">Especialidades Médicas</h2>
+
+<div class="row">
+    {{#each especialidades}}
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100 border-primary border-top border-4">
+            <div class="card-body text-center d-flex flex-column justify-content-center py-4">
+                <h4 class="card-title text-primary fw-bold mb-3">{{this.nombre}}</h4>
+                <a href="/paciente/medicos?especialidad={{this.id_especialidad}}"
+                    class="btn btn-outline-primary mt-auto">Ver Médicos</a>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+
+    {{#unless especialidades.length}}
+    <div class="col-12 text-center text-muted py-5">
+        Actualmente no hay especialidades cargadas en el sistema.
+    </div>
+    {{/unless}}
+</div>

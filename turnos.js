@@ -14,7 +14,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import { validateContentType } from "./middlewares/validateContentType.js";
 import indexRutas from './rutas/indexRutas.js';
+import cookieParser from 'cookie-parser';
+import { cargarUsuarioVista } from './middlewares/authVistas.js';
 
+// Después de configurar Handlebars y express.json(), agregá esto:
+app.use(cookieParser());
+
+// Habilitamos el middleware global SOLO para las rutas de las vistas
+// (Asumiendo que tus vistas empiezan con la barra / o están en un archivo de rutas aparte)
+app.use(cargarUsuarioVista);
 import passport from "passport";
 import { estrategia, validacion } from "./config/passport.js";
 import { router as v1EspecialidadesRutas } from './rutas/v1/especialidadesRutas.js';

@@ -1,0 +1,36 @@
+<h2 class="fw-bold mb-4">Mis Turnos</h2>
+
+<div class="row">
+    {{#if turnos.length}}
+    {{#each turnos}}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div
+            class="card shadow-sm h-100 {{#if this.atendido}}border-success{{else}}border-warning{{/if}} border-top border-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge {{#if this.atendido}}bg-success{{else}}bg-warning text-dark{{/if}} fs-6">
+                        {{#if this.atendido}}✅ Atendido{{else}}⏳ Pendiente{{/if}}
+                    </span>
+                    <span class="fw-bold text-primary">{{this.fecha_hora}}</span>
+                </div>
+
+                <h5 class="card-title fw-bold mb-1">Dr/a. {{this.medico_apellido}}, {{this.medico_nombres}}</h5>
+                <p class="card-text text-muted mb-3">{{this.especialidad_nombre}}</p>
+
+                <hr>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Valor a abonar:</span>
+                    <span class="fw-bold text-success fs-5">${{this.valor_total}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+    {{else}}
+    <div class="col-12 text-center py-5">
+        <h4 class="text-muted">Todavía no tenés turnos registrados.</h4>
+        <a href="/paciente/especialidades" class="btn btn-primary mt-3 fw-bold">¡Reservar mi primer turno!</a>
+    </div>
+    {{/if}}
+</div>

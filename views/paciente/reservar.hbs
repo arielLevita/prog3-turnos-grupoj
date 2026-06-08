@@ -1,0 +1,35 @@
+<h2 class="fw-bold mb-4">Reservar Nuevo Turno</h2>
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body p-4">
+                <form action="/paciente/reservar" method="POST">
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Seleccioná a tu Médico</label>
+                        <select class="form-select" name="id_medico" required>
+                            <option value="" disabled selected>Elegí un profesional...</option>
+                            {{#each medicos}}
+                            <option value="{{this.id_medico}}">{{this.apellido}}, {{this.nombres}} -
+                                {{this.especialidad_nombre}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Fecha y Hora del Turno</label>
+                        <input type="datetime-local" class="form-control" name="fecha_hora" required>
+                    </div>
+
+                    <div class="alert alert-warning mb-4" style="font-size: 0.9rem;">
+                        <strong>Aviso:</strong> El valor final de la consulta se calculará automáticamente teniendo en
+                        cuenta el descuento de tu obra social registrada.
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">Confirmar Reserva</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

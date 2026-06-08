@@ -1,0 +1,69 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">🏥 Clínica Integrador</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+
+                {{#if usuario}}
+                {{#if (eq usuario.rol 1)}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/medico/turnos">Mis Turnos</a>
+                </li>
+                {{/if}}
+
+                {{#if (eq usuario.rol 2)}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/paciente/reservar">Reservar Turno</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/paciente/turnos">Mis Turnos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/paciente/especialidades">Especialidades y Médicos</a>
+                </li>
+                {{/if}}
+
+                {{#if (eq usuario.rol 3)}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/especialidades">Especialidades</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/obras-sociales">Obras Sociales</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/medicos">Médicos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/turnos">Gestión de Turnos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/estadisticas">Estadísticas</a>
+                </li>
+                {{/if}}
+                {{/if}}
+            </ul>
+
+            <ul class="navbar-nav">
+                {{#if usuario}}
+                <li class="nav-item d-flex align-items-center">
+                    <span class="navbar-text text-white me-3">
+                        Hola, <strong>{{usuario.nombres}}</strong>
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-outline-light btn-sm mt-1" href="/auth/logout">Cerrar Sesión</a>
+                </li>
+                {{else}}
+                <li class="nav-item">
+                    <a class="btn btn-light btn-sm mt-1" href="/login">Iniciar Sesión</a>
+                </li>
+                {{/if}}
+            </ul>
+        </div>
+    </div>
+</nav>

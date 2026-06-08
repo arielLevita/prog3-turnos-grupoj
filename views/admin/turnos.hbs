@@ -1,0 +1,44 @@
+<h2 class="fw-bold mb-4">Gestión de Turnos (Administrador)</h2>
+
+<div class="card shadow-sm border-primary">
+    <div class="card-header bg-primary text-white fw-bold">
+        📅 Registrar Nuevo Turno Manual
+    </div>
+    <div class="card-body">
+        <form action="/admin/turnos" method="POST">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Paciente</label>
+                    <select class="form-select" name="id_paciente" required>
+                        <option value="" disabled selected>Elegí un paciente...</option>
+                        {{#each pacientes}}
+                        <option value="{{this.id_paciente}}">{{this.apellido}}, {{this.nombres}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Médico</label>
+                    <select class="form-select" name="id_medico" required>
+                        <option value="" disabled selected>Elegí un médico...</option>
+                        {{#each medicos}}
+                        <option value="{{this.id_medico}}">{{this.apellido}} ({{this.especialidad_nombre}})</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Fecha y Hora</label>
+                    <input type="datetime-local" class="form-control" name="fecha_hora" required>
+                </div>
+            </div>
+
+            <div class="alert alert-info py-2 text-center text-muted" style="font-size: 0.9rem;">
+                ℹ️ El valor del turno se calculará automáticamente según la obra social del paciente y el valor de
+                consulta del médico seleccionado.
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold">Registrar Turno</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+<h2 class="fw-bold mb-4">Nuestros Médicos</h2>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form action="/paciente/medicos" method="GET" class="d-flex flex-column flex-md-row align-items-md-center">
+            <label class="form-label me-3 mb-2 mb-md-0 fw-semibold text-nowrap">Filtrar por Especialidad:</label>
+            <select name="especialidad" class="form-select w-auto me-3" onchange="this.form.submit()">
+                <option value="">Todos los médicos</option>
+                {{#each especialidades}}
+                <option value="{{this.id_especialidad}}">{{this.nombre}}</option>
+                {{/each}}
+            </select>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    {{#each medicos}}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-3"
+                        style="width: 50px; height: 50px; font-size: 1.5rem;">
+                        👨‍⚕️
+                    </div>
+                    <div>
+                        <h5 class="card-title fw-bold mb-0">{{this.nombres}} {{this.apellido}}</h5>
+                        <span class="badge bg-info text-dark">{{this.especialidad_nombre}}</span>
+                    </div>
+                </div>
+                <p class="card-text text-muted mb-3" style="font-size: 0.9rem;">
+                    {{this.descripcion}}
+                </p>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold text-success">Consulta: ${{this.valor_consulta}}</span>
+                    <a href="/paciente/reservar?id_medico={{this.id_medico}}"
+                        class="btn btn-sm btn-primary fw-bold">Reservar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+
+    {{#unless medicos.length}}
+    <div class="col-12 text-center text-muted py-5">
+        No se encontraron médicos para la especialidad seleccionada.
+    </div>
+    {{/unless}}
+</div>

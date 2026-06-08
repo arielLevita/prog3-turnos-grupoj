@@ -1,0 +1,82 @@
+<h2 class="fw-bold mb-4">Mis Turnos Asignados</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Fecha y Hora</th>
+                        <th>Paciente</th>
+                        <th>Obra Social</th>
+                        <th>Valor Consulta</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#if turnos.length}}
+                    {{#each turnos}}
+                    <tr>
+                        <td class="fw-bold">{{this.fecha_hora}}</td>
+                        <td>{{this.paciente_apellido}}, {{this.paciente_nombres}}</td>
+                        <td>{{this.obra_social_nombre}}</td>
+                        <td class="text-success fw-bold">${{this.valor_total}}</td>
+                        <td>
+                            {{#if this.atendido}}
+                            <span class="badge bg-success">Atendido</span>
+                            {{else}}
+                            <span class="badge bg-warning text-dark">Pendiente</span>
+                            {{/if}}
+                        </td>
+                        <td>
+                            {{#unless this.atendido}}
+                            <button class="btn btn-sm btn-primary fw-bold"
+                                onclick="marcarComoAtendido({{this.id_turno_reserva}})">
+                                Marcar Atendido
+                            </button>
+                            {{else}}
+                            <span class="text-muted small">Completado</span>
+                            {{/unless}}
+                        </td>
+                    </tr>
+                    {{/each}}
+                    {{else}}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No tenés turnos asignados por el momento.
+                        </td>
+                    </tr>
+                    {{/if}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function marcarComoAtendido(idTurno) {
+        // Le preguntamos al médico si está seguro para evitar clics por error
+        if (!confirm('¿Estás seguro de marcar este turno como atendido?')) return;
+
+        try {
+            // Hacemos el PUT al endpoint de la API
+            // (Asegurate de que esta URL coincida con la ruta de tu backend)
+            const respuesta = await fetch(`/api/v1/turnos/${idTurno}/atender`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (respuesta.ok) {
+                // Si la API responde OK, recargamos la página para actualizar la tabla
+                window.location.reload();
+            } else {
+                alert('Hubo un error al intentar actualizar el turno.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error de conexión con el servidor.');
+        }
+    }
+</script>
