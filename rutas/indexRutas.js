@@ -11,9 +11,8 @@ import { router as v2TurnosRutas } from "./v2/turnosRutas.js";
 import { router as v2MedicosRutas } from "./v2/medicosRutas.js";
 import { router as v2AuthRutas } from "./v2/authRutas.js";
 
-import { router as turnosWebRutas } from "./web/turnosWebRutas.js";
-import { router as medicosWebRutas } from "./web/medicosWebRutas.js";
-import { router as pacientesWebRutas } from "./web/pacientesWebRutas.js";
+
+import vistasRutas from "./web/vistasRutas.js";
 
 const router = express.Router();
 
@@ -34,8 +33,8 @@ router.use('/api/v2/turnos', verificarToken, v2TurnosRutas);
 router.use('/api/v2/pacientes', verificarToken, v2PacientesRutas);
 router.use('/api/v2/obras-sociales', verificarToken, v2ObrasSocialesRutas);
 
-router.use('/web/turnos', turnosWebRutas);
-router.use('/web/medicos', medicosWebRutas);
-router.use('/web/pacientes', pacientesWebRutas);
+
+
+router.use('/', vistasRutas);
 
 export default router;
