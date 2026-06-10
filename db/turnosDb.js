@@ -6,11 +6,14 @@ export default class TurnosDb {
         let strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
                              CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,
                              CONCAT(vp.apellido, ' ', vp.nombres) AS paciente_nombre,
-                             os.nombre AS obra_social_nombre
+                             os.nombre AS obra_social_nombre,
+                             e.nombre AS especialidad_nombre
                       FROM turnos_reservas t
                       JOIN v_medicos vm ON t.id_medico = vm.id_medico
                       JOIN v_pacientes vp ON t.id_paciente = vp.id_paciente
                       JOIN obras_sociales os ON t.id_obra_social = os.id_obra_social
+                      JOIN medicos m ON t.id_medico = m.id_medico
+                      JOIN especialidades e ON m.id_especialidad = e.id_especialidad
                       WHERE t.activo = 1 `;
         const filterValuesArray = [];
 
@@ -42,11 +45,14 @@ export default class TurnosDb {
         const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
                              CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,
                              CONCAT(vp.apellido, ' ', vp.nombres) AS paciente_nombre,
-                             os.nombre AS obra_social_nombre
+                             os.nombre AS obra_social_nombre,
+                             e.nombre AS especialidad_nombre
                       FROM turnos_reservas t
                       JOIN v_medicos vm ON t.id_medico = vm.id_medico
                       JOIN v_pacientes vp ON t.id_paciente = vp.id_paciente
                       JOIN obras_sociales os ON t.id_obra_social = os.id_obra_social
+                      JOIN medicos m ON t.id_medico = m.id_medico
+                      JOIN especialidades e ON m.id_especialidad = e.id_especialidad
                       WHERE t.activo = 1 AND vm.id_usuario = ?`;
         const [rows] = await pool.query(strSql, [id_usuario]);
         return rows;
@@ -56,11 +62,14 @@ export default class TurnosDb {
         const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
                              CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,
                              CONCAT(vp.apellido, ' ', vp.nombres) AS paciente_nombre,
-                             os.nombre AS obra_social_nombre
+                             os.nombre AS obra_social_nombre,
+                             e.nombre AS especialidad_nombre
                       FROM turnos_reservas t
                       JOIN v_medicos vm ON t.id_medico = vm.id_medico
                       JOIN v_pacientes vp ON t.id_paciente = vp.id_paciente
                       JOIN obras_sociales os ON t.id_obra_social = os.id_obra_social
+                      JOIN medicos m ON t.id_medico = m.id_medico
+                      JOIN especialidades e ON m.id_especialidad = e.id_especialidad
                       WHERE t.activo = 1 AND vp.id_usuario = ?`;
         const [rows] = await pool.query(strSql, [id_usuario]);
         return rows;
@@ -70,11 +79,14 @@ export default class TurnosDb {
         const strSql = `SELECT t.id_turno_reserva, t.id_medico, t.id_paciente, t.id_obra_social, t.fecha_hora, t.valor_total, t.atentido,
                                CONCAT(vm.apellido, ' ', vm.nombres) AS medico_nombre,
                                CONCAT(vp.apellido, ' ', vp.nombres) AS paciente_nombre,
-                               os.nombre AS obra_social_nombre
+                               os.nombre AS obra_social_nombre,
+                               e.nombre AS especialidad_nombre
                         FROM turnos_reservas t
                         JOIN v_medicos vm ON t.id_medico = vm.id_medico
                         JOIN v_pacientes vp ON t.id_paciente = vp.id_paciente
                         JOIN obras_sociales os ON t.id_obra_social = os.id_obra_social
+                        JOIN medicos m ON t.id_medico = m.id_medico
+                        JOIN especialidades e ON m.id_especialidad = e.id_especialidad
                         WHERE t.activo = 1 AND t.id_turno_reserva = ?`;
         const [rows] = await pool.execute(strSql, [id]);
         return (rows.length > 0) ? rows[0] : null;
