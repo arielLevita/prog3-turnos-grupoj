@@ -9,7 +9,7 @@ export default class MedicosDb {
                       FROM v_medicos v
                       JOIN medicos m ON v.id_medico = m.id_medico
                       JOIN especialidades e ON m.id_especialidad = e.id_especialidad 
-                      WHERE 1=1 `; // 1=1 es un truco para poder concatenar los AND más fácil
+                      WHERE 1=1 `; 
         const filterValuesArray = [];
 
         if (filters) {
@@ -73,14 +73,20 @@ export default class MedicosDb {
     
         const [rows] = await pool.execute(sql, [id_medico, id_obra_social]);
         return rows;
-    }
+    }
+
+
+
+
     buscarAsociacionesPorMedico = async (id_medico) => {
         const strSql = `SELECT id_obra_social 
                         FROM medicos_obras_sociales 
                         WHERE id_medico = ? AND activo = 1`;
-        const [rows] = await pool.query(strSql, [id_medico]);
+        const [rows] = await pool.query(strSql, [id_medico]);
+
         return rows.map(row => row.id_obra_social);
-    }
+    }
+
     asociarMultiples = async (id_medico, obras_sociales_ids) => {
         const conexion = await pool.getConnection();
         try {
@@ -95,12 +101,16 @@ export default class MedicosDb {
             return true;
         } catch (error) {
             await conexion.rollback();
-            console.error("Error en transacción asociarMultiples:", error);
+            console.error("Error en transacción asociarMultiples:", error);
+
             throw error; 
-        } finally {
+        } finally {
+
+
             conexion.release();
         }
-    }
+    }
+
     desasociarObraSocial = async (id_medico, id_obra_social) => {
         const strSql = `UPDATE medicos_obras_sociales 
                         SET activo = 0 
