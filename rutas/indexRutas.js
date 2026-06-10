@@ -10,6 +10,7 @@ import { router as v2PacientesRutas } from "./v2/pacientesRutas.js";
 import { router as v2TurnosRutas } from "./v2/turnosRutas.js";
 import { router as v2MedicosRutas } from "./v2/medicosRutas.js";
 import { router as v2AuthRutas } from "./v2/authRutas.js";
+import { router as v2PublicRutas } from "./v2/publicRutas.js";
 
 import { router as turnosWebRutas } from "./web/turnosWebRutas.js";
 import { router as medicosWebRutas } from "./web/medicosWebRutas.js";
@@ -24,6 +25,7 @@ router.get('/', (req, res) => {
 router.use('/api/v1/especialidades', v1EspecialidadesRutas);
 
 router.use('/api/v2/auth', v2AuthRutas);
+router.use('/api/v2/public', v2PublicRutas);
 
 const verificarToken = autenticarJWT;
 
