@@ -76,6 +76,11 @@ router.put("/:id_paciente",
     controller.modificar.bind(controller)
 );
 
+router.patch("/:id_paciente/obra-social", 
+    [autorizarUsuarios([3]), ...validarId, body("idObraSocial").notEmpty().isInt({ min: 1 }).withMessage("ID de obra social obligatorio"), validarCampos], 
+    controller.modificarObraSocial.bind(controller)
+);
+
 router.delete("/:id_paciente", 
     [autorizarUsuarios([3]), ...validarId], 
     controller.borrar.bind(controller)
