@@ -8,3 +8,6 @@ bruno/
 # Logs
 *.log
 accesos.log
+
+# Uploads
+public/uploads/

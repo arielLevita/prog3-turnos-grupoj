@@ -65,18 +65,21 @@ export default class UsuariosDb {
 
         let strSql = "";
         let values = [];
+        let setFields = "documento = ?, apellido = ?, nombres = ?, email = ?, rol = ?";
+        let baseValues = [documento, apellido, nombres, email, rol];
+
+        if (fotoPath) {
+            setFields += ", foto_path = ?";
+            baseValues.push(fotoPath);
+        }
 
         if (contrasenia) {
-            strSql = `UPDATE usuarios 
-                      SET documento = ?, apellido = ?, nombres = ?, email = ?, contrasenia = ?, foto_path = ?, rol = ? 
-                      WHERE id_usuario = ?`;
-            values = [documento, apellido, nombres, email, contrasenia, fotoPath, rol, id];
-        } else {
-            strSql = `UPDATE usuarios 
-                      SET documento = ?, apellido = ?, nombres = ?, email = ?, foto_path = ?, rol = ? 
-                      WHERE id_usuario = ?`;
-            values = [documento, apellido, nombres, email, fotoPath, rol, id];
+            setFields += ", contrasenia = ?";
+            baseValues.push(contrasenia);
         }
+
+        strSql = `UPDATE usuarios SET ${setFields} WHERE id_usuario = ?`;
+        values = [...baseValues, id];
         
         await pool.execute(strSql, values);
         return id;

@@ -8,12 +8,21 @@ export default class MedicosServicio {
 
     buscarTodas = async (filters, limit, offset, order) => {
         const medicosCrud = await this.db.buscarTodas(filters, limit, offset, order);
-        return medicosCrud.map(medico => new MedicoResponseDto(medico));
+        
+        const medicosCompletos = await Promise.all(medicosCrud.map(async (medico) => {
+            medico.obrasSociales = await this.db.buscarObrasSocialesDetalle(medico.id_medico);
+            return new MedicoResponseDto(medico);
+        }));
+
+        return medicosCompletos;
     }
 
     buscarPorId = async (id) => {
         const medico = await this.db.buscarPorId(id);
         if (!medico) return null;
+        
+        medico.obrasSociales = await this.db.buscarObrasSocialesDetalle(id);
+        
         return new MedicoResponseDto(medico);
     }
 

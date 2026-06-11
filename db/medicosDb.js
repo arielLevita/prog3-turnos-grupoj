@@ -87,6 +87,15 @@ export default class MedicosDb {
         return rows.map(row => row.id_obra_social);
     }
 
+    buscarObrasSocialesDetalle = async (id_medico) => {
+        const strSql = `SELECT os.id_obra_social, os.nombre 
+                        FROM medicos_obras_sociales mos
+                        JOIN obras_sociales os ON mos.id_obra_social = os.id_obra_social
+                        WHERE mos.id_medico = ? AND mos.activo = 1`;
+        const [rows] = await pool.query(strSql, [id_medico]);
+        return rows;
+    }
+
     asociarMultiples = async (id_medico, obras_sociales_ids) => {
         const conexion = await pool.getConnection();
         try {
