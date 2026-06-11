@@ -62,6 +62,21 @@
                     "idObraSocial": 1,
                     "obraSocialNombre": "OSUNER"
                 }
+            },
+            "AsignarObraSocialInput": {
+                "type": "object",
+                "required": [
+                    "idObraSocial"
+                ],
+                "properties": {
+                    "idObraSocial": {
+                        "type": "integer",
+                        "description": "ID de la nueva obra social a asociar."
+                    }
+                },
+                "example": {
+                    "idObraSocial": 2
+                }
             }
         }
     },
@@ -202,6 +217,39 @@
                 "responses": {
                     "200": {
                         "description": "Paciente eliminado con éxito."
+                    }
+                }
+            }
+        },
+        "/api/v2/pacientes/{id_paciente}/obra-social": {
+            "patch": {
+                "summary": "Actualiza únicamente la obra social de un paciente",
+                "tags": [
+                    "Pacientes"
+                ],
+                "parameters": [
+                    {
+                        "name": "id_paciente",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AsignarObraSocialInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Obra social del paciente modificada con éxito."
                     }
                 }
             }
