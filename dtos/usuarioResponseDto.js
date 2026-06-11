@@ -7,8 +7,5 @@ export default class UsuarioResponseDto {
         this.email = dbRow.email;
         this.fotoPath = dbRow.foto_path;
         this.rol = dbRow.rol;
-        
-        // ¡Fijate que a propósito NO ponemos this.contrasenia!
-        // Así nos aseguramos de que jamás se filtre por la API.
     }
 }

@@ -1,5 +1,6 @@
 import ObrasSocialesDb from '../db/obrasSocialesDb.js';
 import ObraSocialDto from '../dtos/obraSocialDto.js';
+import apicache from "apicache"
 
 export default class ObrasSocialesServicio {
     constructor() {
@@ -21,6 +22,8 @@ export default class ObrasSocialesServicio {
     }
 
     crear = async (obraSocialCreateDto) => {
+
+        apicache.clear()
         return await this.db.crear(obraSocialCreateDto);
     }
 
@@ -29,6 +32,8 @@ export default class ObrasSocialesServicio {
         if (!existe) return null;
 
         await this.db.modificar(id, obraSocialCreateDto);
+
+        apicache.clear()
         return id;
     }
 
@@ -37,6 +42,8 @@ export default class ObrasSocialesServicio {
         if (!existe) return null;
 
         await this.db.borrar(id);
+
+        apicache.clear()
         return id;
     }
 }

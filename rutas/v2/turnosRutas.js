@@ -4,13 +4,14 @@ import apicache from "apicache";
 import TurnosControlador from '../../controladores/turnosControlador.js';
 import TurnoCreateDto from '../../dtos/turnoCreateDto.js';
 import validarCampos from '../../middlewares/validarCampos.js'; 
+import autorizarUsuarios from '../../middlewares/autorizarUsuarios.js';
 
 const cache = apicache.middleware;
 const controller = new TurnosControlador();
 const router = express.Router();
 
 const validarId = [
-    param('id_turno_reserva').notEmpty().isInt({ min: 1 }).toInt(),
+    param('id_turno').notEmpty().isInt({ min: 1 }).toInt(),
     validarCampos
 ];
 
@@ -51,147 +52,28 @@ const transformDTO = (req, res, next) => {
     next();
 };
 
-// --- SCHEMAS DE SWAGGER (DOCUMENTACIÓN ACTUALIZADA) ---
-/**
- * @swagger
- * components:
- *   schemas:
- *     TurnoResponse:
- *       type: object
- *       properties:
- *         idTurnoReserva:
- *           type: integer
- *         idMedico:
- *           type: integer
- *         medicoNombre:
- *           type: string
- *         idPaciente:
- *           type: integer
- *         pacienteNombre:
- *           type: string
- *         idObraSocial:
- *           type: integer
- *         obraSocialNombre:
- *           type: string
- *         fechaHora:
- *           type: string
- *           format: date-time
- *         valorTotal:
- *           type: number
- *           format: float
- *         atendido:
- *           type: boolean
- *       example:
- *         idTurnoReserva: 1
- *         idMedico: 1
- *         medicoNombre: "Lopez Marcelo"
- *         idPaciente: 1
- *         pacienteNombre: "Lopez Jacinto"
- *         idObraSocial: 1
- *         obraSocialNombre: "Jerárquicos"
- *         fechaHora: "2026-04-01 17:00:00"
- *         valorTotal: 4500.00
- *         atendido: false
- */
-
-// --- RUTAS CON .bind(controller) ---
-
-/**
- * @swagger
- * /api/v2/turnos-reservas:
- *   get:
- *     summary: Obtiene la lista de turnos y reservas
- *     tags: [Turnos]
- *     responses:
- *       200:
- *         description: Lista de turnos
- */
 router.get("/", 
-    [validarQueryParams, findAllTransformarQueryParams, cache("5 minutes")], 
+    [autorizarUsuarios([1, 2]), validarQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/turnos-reservas/{id_turno_reserva}:
- *   get:
- *     summary: Obtiene un turno por ID
- *     tags: [Turnos]
- *     parameters:
- *       - name: id_turno_reserva
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Turno encontrado
- */
-router.get("/:id_turno_reserva", 
-    validarId, 
+router.get("/:id_turno", 
+    [autorizarUsuarios([1, 2]), ...validarId], 
     controller.buscarPorId.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/turnos-reservas:
- *   post:
- *     summary: Registra un nuevo turno (Calcula el costo y usa transacciones)
- *     tags: [Turnos]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Turno'
- *     responses:
- *       201:
- *         description: Turno creado
- */
 router.post("/", 
-    [validarPayload, transformDTO], 
+    [autorizarUsuarios([2, 3]), ...validarPayload, transformDTO], 
     controller.crear.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/turnos-reservas/{id_turno_reserva}/atendido:
- *   patch:
- *     summary: Marca un turno como atendido
- *     tags: [Turnos]
- *     parameters:
- *       - name: id_turno_reserva
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Turno actualizado
- */
-router.patch("/:id_turno_reserva/atendido", 
-    validarId, 
+router.patch("/:id_turno/atendido", 
+    [autorizarUsuarios([1]), ...validarId], 
     controller.marcarAtendido.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/turnos-reservas/{id_turno_reserva}:
- *   delete:
- *     summary: Cancela/Elimina un turno (Soft Delete)
- *     tags: [Turnos]
- *     parameters:
- *       - name: id_turno_reserva
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Turno eliminado
- */
-router.delete("/:id_turno_reserva", 
-    validarId, 
+router.delete("/:id_turno", 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.borrar.bind(controller)
 );
 

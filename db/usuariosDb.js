@@ -15,7 +15,7 @@ export default class UsuariosDb {
                     strSql += `${clave} LIKE ? AND `;
                     filterValuesArray.push(`%${filters[clave]}%`);
                 } else {
-                    // Para documento y rol, búsqueda exacta
+
                     strSql += `${clave} = ? AND `;
                     filterValuesArray.push(filters[clave]);
                 }
@@ -46,6 +46,14 @@ export default class UsuariosDb {
         return (rows.length > 0) ? rows[0] : null;
     }
 
+    buscar = async (email, contrasenia) => {
+        const strSql = `SELECT u.id_usuario, CONCAT(u.nombres, ' ', u.apellido) as usuario, u.rol 
+                        FROM usuarios AS u
+                        WHERE u.email = ? AND u.contrasenia = SHA2(?, 256) AND u.activo = 1`;
+        const [rows] = await pool.execute(strSql, [email, contrasenia]);
+        return (rows.length > 0) ? rows[0] : null;
+    }
+
     crear = async ({ documento, apellido, nombres, email, contrasenia, fotoPath, rol }) => {
         const strSql = `INSERT INTO usuarios (documento, apellido, nombres, email, contrasenia, foto_path, rol) 
                         VALUES (?, ?, ?, ?, ?, ?, ?)`;
@@ -54,7 +62,7 @@ export default class UsuariosDb {
     }
 
     modificar = async (id, { documento, apellido, nombres, email, contrasenia, fotoPath, rol }) => {
-        // Si mandaron una contraseña nueva, la actualizamos. Si no, dejamos la que estaba.
+
         let strSql = "";
         let values = [];
 

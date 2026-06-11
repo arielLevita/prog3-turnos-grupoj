@@ -9,7 +9,7 @@ export default class MedicosDb {
                       FROM v_medicos v
                       JOIN medicos m ON v.id_medico = m.id_medico
                       JOIN especialidades e ON m.id_especialidad = e.id_especialidad 
-                      WHERE 1=1 `; // 1=1 es un truco para poder concatenar los AND más fácil
+                      WHERE 1=1 `; 
         const filterValuesArray = [];
 
         if (filters) {
@@ -68,7 +68,6 @@ export default class MedicosDb {
         return id;
     }
 
-
     buscarRelacion = async (id_medico, id_obra_social) => {
         const sql = `SELECT * FROM medicos_obras_sociales WHERE id_medico = ? AND id_obra_social = ? AND activo = 1`;
     
@@ -76,22 +75,48 @@ export default class MedicosDb {
         return rows;
     }
 
-    relacionarConObraSocial = async (id_medico, id_obra_social) => {
+
+
+
+    buscarAsociacionesPorMedico = async (id_medico) => {
+        const strSql = `SELECT id_obra_social 
+                        FROM medicos_obras_sociales 
+                        WHERE id_medico = ? AND activo = 1`;
+        const [rows] = await pool.query(strSql, [id_medico]);
+
+        return rows.map(row => row.id_obra_social);
+    }
+
+    asociarMultiples = async (id_medico, obras_sociales_ids) => {
         const conexion = await pool.getConnection();
         try {
-            const sql = "INSERT INTO medicos_obras_sociales (id_medico, id_obra_social) VALUES (?, ?);"
-            await conexion.execute(sql, [id_medico, id_obra_social]);
+            await conexion.beginTransaction();
 
-            conexion.release();
+            for (const id_obra_social of obras_sociales_ids) {
+                const sql = `INSERT INTO medicos_obras_sociales (id_medico, id_obra_social) VALUES (?, ?);`
+                await conexion.execute(sql, [id_medico, id_obra_social]);
+            }
+
+            await conexion.commit();
             return true;
-            
         } catch (error) {
             await conexion.rollback();
+            console.error("Error en transacción asociarMultiples:", error);
+
+            throw error; 
+        } finally {
+
+
             conexion.release();
-            console.log(error);
-            return false;
-            
         }
+    }
+
+    desasociarObraSocial = async (id_medico, id_obra_social) => {
+        const strSql = `UPDATE medicos_obras_sociales 
+                        SET activo = 0 
+                        WHERE id_medico = ? AND id_obra_social = ?`;
+        await pool.execute(strSql, [id_medico, id_obra_social]);
+        return true;
     }
 
     borrar = async (id) => {
@@ -101,6 +126,4 @@ export default class MedicosDb {
         await pool.execute(strSql, [id]);
     }
 }
-
-
 

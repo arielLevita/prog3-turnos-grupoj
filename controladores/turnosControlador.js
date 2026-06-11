@@ -8,7 +8,7 @@ export default class TurnosControlador {
     buscarTodas = async (req, res) => {
         try {
             const { filter, limit, offset, order } = req.query;
-            const turnos = await this.servicio.buscarTodas(filter, limit, offset, order);
+            const turnos = await this.servicio.buscarTodas(req.user, filter, limit, offset, order);
             res.status(200).json(turnos);
         } catch (error) {
             res.status(500).json({ error: 'Error interno del servidor' });
@@ -17,7 +17,7 @@ export default class TurnosControlador {
 
     buscarPorId = async (req, res) => {
         try {
-            const id = req.params.id_turno_reserva;
+            const id = req.params.id_turno;
             const turno = await this.servicio.buscarPorId(id);
             if (!turno) {
                 return res.status(404).json({ error: 'Turno no encontrado' });
@@ -32,18 +32,18 @@ export default class TurnosControlador {
         try {
             const idGenerado = await this.servicio.crear(req.dto);
             res.status(201).json({ estado: true, msg: `Turno creado con ID ${idGenerado}` });
-        } catch (error) {
-            // Atajamos los errores específicos que lanzamos en el Servicio
+        } catch (error) {
             if (error.message === 'MEDICO_NO_ENCONTRADO') {
                 return res.status(400).json({ error: 'El médico especificado no existe o está inactivo' });
             }
+            if (error.message === 'PACIENTE_NO_ENCONTRADO') {
+                return res.status(400).json({ error: 'El paciente especificado no existe o está inactivo' });
+            }
             if (error.message === 'OBRA_SOCIAL_NO_ENCONTRADA') {
                 return res.status(400).json({ error: 'La obra social especificada no existe o está inactiva' });
-            }
-            
-            // Error de llave foránea genérico (ej: el paciente no existe)
+            }
             if (error.code === 'ER_NO_REFERENCED_ROW_2') {
-                return res.status(400).json({ error: 'El ID de paciente no es válido' });
+                return res.status(400).json({ error: 'El ID de paciente u otra referencia no es válido' });
             }
 
             console.error(error);
@@ -53,7 +53,7 @@ export default class TurnosControlador {
 
     marcarAtendido = async (req, res) => {
         try {
-            const id = req.params.id_turno_reserva;
+            const id = req.params.id_turno;
             const idModificado = await this.servicio.marcarAtendido(id);
             
             if (!idModificado) {
@@ -67,7 +67,7 @@ export default class TurnosControlador {
 
     borrar = async (req, res) => {
         try {
-            const id = req.params.id_turno_reserva;
+            const id = req.params.id_turno;
             const idBorrado = await this.servicio.borrar(id);
             if (!idBorrado) {
                 return res.status(404).json({ error: 'Turno no encontrado' });

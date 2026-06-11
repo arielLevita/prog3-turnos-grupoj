@@ -1,19 +1,27 @@
 import TurnosDb from '../db/turnosDb.js';
-import MedicosDb from '../db/medicosDb.js';
-import ObrasSocialesDb from '../db/obrasSocialesDb.js';
+import MedicosServicio from './medicosServicio.js';
+import ObrasSocialesServicio from './obrasSocialesServicio.js';
+import PacientesServicio from './pacientesServicio.js';
 import TurnoResponseDto from '../dtos/turnoResponseDto.js';
 
 export default class TurnosServicio {
     constructor() {
         this.turnosDb = new TurnosDb();
-        // Instanciamos las otras DB para poder leer los precios y descuentos
-        this.medicosDb = new MedicosDb();
-        this.obrasSocialesDb = new ObrasSocialesDb();
+        this.medicosServicio = new MedicosServicio();
+        this.obrasSocialesServicio = new ObrasSocialesServicio();
+        this.pacientesServicio = new PacientesServicio();
     }
 
-    buscarTodas = async (filters, limit, offset, order) => {
-        const turnosCrud = await this.turnosDb.buscarTodas(filters, limit, offset, order);
-        return turnosCrud.map(turno => new TurnoResponseDto(turno));
+    buscarTodas = async (usuario, filters, limit, offset, order) => {
+        let listaTurnos = [];
+
+        if (usuario.rol === 1) {
+            listaTurnos = await this.turnosDb.turnosDeUnMedico(usuario.idUsuario);
+        } else {
+            listaTurnos = await this.turnosDb.turnosDeUnPaciente(usuario.idUsuario);
+        }
+
+        return listaTurnos.map(turno => new TurnoResponseDto(turno));
     }
 
     buscarPorId = async (id) => {
@@ -23,34 +31,32 @@ export default class TurnosServicio {
     }
 
     crear = async (turnoCreateDto) => {
-        // 1. Buscamos al médico para saber cuánto cobra
-        const medico = await this.medicosDb.buscarPorId(turnoCreateDto.idMedico);
+        const medico = await this.medicosServicio.buscarPorId(turnoCreateDto.idMedico);
         if (!medico) throw new Error('MEDICO_NO_ENCONTRADO');
 
-        // 2. Buscamos la obra social para saber el descuento
-        const obraSocial = await this.obrasSocialesDb.buscarPorId(turnoCreateDto.idObraSocial);
+        const paciente = await this.pacientesServicio.buscarPorId(turnoCreateDto.idPaciente);
+        if (!paciente) throw new Error('PACIENTE_NO_ENCONTRADO');
+
+        const obraSocial = await this.obrasSocialesServicio.buscarPorId(paciente.idObraSocial);
         if (!obraSocial) throw new Error('OBRA_SOCIAL_NO_ENCONTRADA');
 
-        // 3. LÓGICA DE NEGOCIO (El requerimiento del PDF)
-        let valorTotalCalculado = 0;
-        const valorConsulta = parseFloat(medico.valor_consulta);
-        const porcentajeDescuento = parseFloat(obraSocial.porcentaje_descuento);
+        turnoCreateDto.idObraSocial = paciente.idObraSocial;
 
-        if (obraSocial.es_particular === 1) {
-            // Si es particular, paga el 100% de la consulta
+        let valorTotalCalculado = 0;
+
+        const valorConsulta = medico.valorConsulta;
+        const porcentajeDescuento = obraSocial.porcentajeDescuento;
+
+        if (obraSocial.esParticular === true) {
             valorTotalCalculado = valorConsulta;
         } else {
-            // Si NO es particular, aplicamos el porcentaje de descuento
-            // Fórmula: ValorConsulta - (Descuento * ValorConsulta / 100)
             const descuentoAplicado = (porcentajeDescuento * valorConsulta) / 100;
             valorTotalCalculado = valorConsulta - descuentoAplicado;
         }
 
-        // 4. Le pasamos el DTO y el cálculo final a la capa DB para la Transacción
         return await this.turnosDb.crear(turnoCreateDto, valorTotalCalculado);
     }
 
-    // Un método simple para que el médico cambie "atentido = 1"
     marcarAtendido = async (id) => {
         const existe = await this.turnosDb.buscarPorId(id);
         if (!existe) return null;

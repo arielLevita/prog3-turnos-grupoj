@@ -1,10 +1,10 @@
-// src/rutas/v2/pacientesRutas.js
 import express from 'express';
 import { query, param, body } from "express-validator";
 import apicache from "apicache";
 import PacientesControlador from '../../controladores/pacientesControlador.js';
-import PacienteCreateDto from '../../dtos/pacienteCreateDto.js';
+import PacienteCreateDto from '../../dtos/pacienteCreateDTO.js';
 import validarCampos from '../../middlewares/validarCampos.js'; 
+import autorizarUsuarios from '../../middlewares/autorizarUsuarios.js';
 
 const cache = apicache.middleware;
 const controller = new PacientesControlador();
@@ -56,132 +56,33 @@ const transformarDTO = (req, res, next) => {
     next();
 };
 
-// --- SCHEMAS DE SWAGGER (DOCUMENTACIÓN) ---
-/**
- * @swagger
- * components:
- *   schemas:
- *     Paciente:
- *       type: object
- *       required:
- *         - idUsuario
- *         - idObraSocial
- *       properties:
- *         idUsuario:
- *           type: integer
- *           description: ID del usuario asociado a este paciente
- *         idObraSocial:
- *           type: integer
- *           description: ID de la obra social del paciente
- *       example:
- *         idUsuario: 5
- *         idObraSocial: 1
- */
-
-// --- RUTAS CON .bind(controller) ---
-
-/**
- * @swagger
- * /api/v2/pacientes:
- *   get:
- *     summary: Obtiene la lista de pacientes (con datos de usuario y obra social)
- *     tags: [Pacientes]
- *     responses:
- *       200:
- *         description: Lista de pacientes
- */
 router.get("/", 
-    [validarQueryParams, buscarTodasTransformararQueryParams, cache("5 minutes")], 
+    [autorizarUsuarios([3]), validarQueryParams, buscarTodasTransformararQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/pacientes/{id_paciente}:
- *   get:
- *     summary: Obtiene un paciente por ID
- *     tags: [Pacientes]
- *     parameters:
- *       - name: id_paciente
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Paciente encontrado
- */
 router.get("/:id_paciente", 
-    validarId, 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.buscarPorId.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/pacientes:
- *   post:
- *     summary: Registra un nuevo paciente
- *     tags: [Pacientes]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Paciente'
- *     responses:
- *       201:
- *         description: Creado con éxito
- */
 router.post("/", 
-    [validarPayload, transformarDTO], 
+    [autorizarUsuarios([3]), ...validarPayload, transformarDTO], 
     controller.crear.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/pacientes/{id_paciente}:
- *   put:
- *     summary: Actualiza datos de un paciente
- *     tags: [Pacientes]
- *     parameters:
- *       - name: id_paciente
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Paciente'
- *     responses:
- *       200:
- *         description: Modificado con éxito
- */
 router.put("/:id_paciente", 
-    [validarId, validarPayload, transformarDTO], 
+    [autorizarUsuarios([3]), ...validarId, ...validarPayload, transformarDTO], 
     controller.modificar.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/pacientes/{id_paciente}:
- *   delete:
- *     summary: Borrado lógico (Desactiva al usuario)
- *     tags: [Pacientes]
- *     parameters:
- *       - name: id_paciente
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Eliminado con éxito
- */
+router.patch("/:id_paciente/obra-social", 
+    [autorizarUsuarios([3]), ...validarId, body("idObraSocial").notEmpty().isInt({ min: 1 }).withMessage("ID de obra social obligatorio"), validarCampos], 
+    controller.modificarObraSocial.bind(controller)
+);
+
 router.delete("/:id_paciente", 
-    validarId, 
+    [autorizarUsuarios([3]), ...validarId], 
     controller.borrar.bind(controller)
 );
 

@@ -29,11 +29,17 @@ export default class PacientesServicio {
         return id;
     }
 
-    borrar = async (id) => {
+    modificarObraSocial = async (id, idObraSocial) => {
         const existe = await this.db.buscarPorId(id);
         if (!existe) return null;
 
-        // Esto apagará la cuenta de usuario vinculada a este paciente
+        await this.db.modificarObraSocial(id, idObraSocial);
+        return id;
+    }
+
+    borrar = async (id) => {
+        const existe = await this.db.buscarPorId(id);
+        if (!existe) return null;
         await this.db.borrar(id);
         return id;
     }

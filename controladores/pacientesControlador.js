@@ -33,8 +33,7 @@ export default class PacientesControlador {
         try {
             const idGenerado = await this.servicio.crear(req.dto);
             res.status(201).json({ estado: true, msg: `Paciente registrado con ID ${idGenerado}` });
-        } catch (error) {
-            // Manejamos errores de llave foránea (si mandan un idUsuario que no existe)
+        } catch (error) {
             if (error.code === 'ER_NO_REFERENCED_ROW_2') {
                 return res.status(400).json({ error: 'El ID de Usuario o de Obra Social no existe' });
             }
@@ -54,6 +53,24 @@ export default class PacientesControlador {
         } catch (error) {
             if (error.code === 'ER_NO_REFERENCED_ROW_2') {
                 return res.status(400).json({ error: 'El ID de Usuario o de Obra Social no existe' });
+            }
+            res.status(500).json({ error: 'Error interno del servidor', detalle: error.message });
+        }
+    }
+
+    modificarObraSocial = async (req, res) => {
+        try {
+            const id = req.params.id_paciente;
+            const idObraSocial = req.body.idObraSocial;
+            const idModificado = await this.servicio.modificarObraSocial(id, idObraSocial);
+            
+            if (!idModificado) {
+                return res.status(404).json({ error: 'Paciente no encontrado' });
+            }
+            res.status(200).json({ estado: true, msg: 'Obra social del paciente modificada con éxito' });
+        } catch (error) {
+            if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+                return res.status(400).json({ error: 'El ID de Obra Social no existe' });
             }
             res.status(500).json({ error: 'Error interno del servidor', detalle: error.message });
         }

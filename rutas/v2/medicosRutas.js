@@ -4,6 +4,7 @@ import apicache from "apicache";
 import MedicosControlador from '../../controladores/medicosControlador.js';
 import MedicoCreateDto from '../../dtos/medicoCreateDto.js';
 import validarCampos from '../../middlewares/validarCampos.js'; 
+import autorizarUsuarios from '../../middlewares/autorizarUsuarios.js'; 
 
 const cache = apicache.middleware;
 const controller = new MedicosControlador();
@@ -25,7 +26,6 @@ const validateQueryParams = [
     validarCampos
 ];
 
-// Validamos el JSON completo de entrada
 const validatePayload = [
     body("idUsuario").notEmpty().isInt({ min: 1 }).withMessage("ID de usuario obligatorio"),
     body("idEspecialidad").notEmpty().isInt({ min: 1 }).withMessage("ID de especialidad obligatorio"),
@@ -54,171 +54,49 @@ const findAllTransformarQueryParams = (req, res, next) => {
     next();
 };
 
-
 const transformDTO = (req, res, next) => {
     req.dto = new MedicoCreateDto(req.body);
     next();
 };
 
-// --- SCHEMAS DE SWAGGER (DOCUMENTACIÓN) ---
-/**
- * @swagger
- * components:
- *   schemas:
- *     Medico:
- *       type: object
- *       required:
- *         - idUsuario
- *         - idEspecialidad
- *         - matricula
- *         - valorConsulta
- *       properties:
- *         idUsuario:
- *           type: integer
- *           description: ID del usuario asociado a este médico
- *         idEspecialidad:
- *           type: integer
- *           description: ID de la especialidad
- *         matricula:
- *           type: integer
- *         descripcion:
- *           type: string
- *         valorConsulta:
- *           type: number
- *           format: float
- *       example:
- *         idUsuario: 1
- *         idEspecialidad: 2
- *         matricula: 12345
- *         descripcion: "Atiende lunes y miércoles"
- *         valorConsulta: 12000.50
- */
-
-// --- RUTAS CON .bind(controller) ---
-
-/**
- * @swagger
- * /api/v2/medicos:
- *   get:
- *     summary: Obtiene la lista de médicos (con datos de usuario y especialidad)
- *     tags: [Médicos]
- *     responses:
- *       200:
- *         description: Lista de médicos
- */
 router.get("/", 
-    [validateQueryParams, findAllTransformarQueryParams, cache("5 minutes")], 
+    [autorizarUsuarios([2, 3]), validateQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/medicos/{id_medico}:
- *   get:
- *     summary: Obtiene un médico por ID
- *     tags: [Médicos]
- *     parameters:
- *       - name: id_medico
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Médico encontrado
- */
 router.get("/:id_medico", 
-    validateId, 
+    [autorizarUsuarios([2, 3]), ...validateId], 
     controller.buscarPorId.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/medicos:
- *   post:
- *     summary: Registra un nuevo médico
- *     tags: [Médicos]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Medico'
- *     responses:
- *       201:
- *         description: Creado con éxito
- */
 router.post("/", 
-    [validatePayload, transformDTO], 
+    [autorizarUsuarios([3]), ...validatePayload, transformDTO], 
     controller.crear.bind(controller)
 );
 
-// router.post('/:id_medico/obras-sociales', [
-
-//     validatePayload, transformDTO
-
-// ], controller.asociarMedicosObrasSociales.bind(controller) );
-
 router.post('/:id_medico/obras-sociales', [
-
-    param('id_medico').isInt(),
-
-    body('obrasSociales').isArray({ min: 1 }),
-
-    body('obrasSociales.*.id_obra_social').isInt(),
-
+    autorizarUsuarios([3]),
+    param('id_medico').isInt().withMessage('El ID del médico debe ser un número entero'),
+    body('obras_sociales').isArray({ min: 1 }).withMessage('Debe enviar un array de obras sociales'),
     validarCampos
+], controller.asociarObrasSociales.bind(controller));
 
-], controller.asociarMedicosObrasSociales.bind(controller));
+router.delete('/:id_medico/obras-sociales/:id_obra_social', [
+    autorizarUsuarios([3]),
+    param('id_medico').isInt().withMessage('El ID del médico debe ser un número entero'),
+    param('id_obra_social').isInt().withMessage('El ID de la obra social debe ser un número entero'),
+    validarCampos
+], controller.desasociarObraSocial.bind(controller));
 
-/**
- * @swagger
- * /api/v2/medicos/{id_medico}:
- *   put:
- *     summary: Actualiza datos de un médico
- *     tags: [Médicos]
- *     parameters:
- *       - name: id_medico
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Medico'
- *     responses:
- *       200:
- *         description: Modificado con éxito
- */
 router.put("/:id_medico", 
-    [validateId, validatePayload, transformDTO], 
+    [autorizarUsuarios([3]), ...validateId, ...validatePayload, transformDTO], 
     controller.modificar.bind(controller)
 );
 
-/**
- * @swagger
- * /api/v2/medicos/{id_medico}:
- *   delete:
- *     summary: Borrado lógico (Desactiva al usuario)
- *     tags: [Médicos]
- *     parameters:
- *       - name: id_medico
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Eliminado con éxito
- */
 router.delete("/:id_medico", 
-    validateId, 
+    [autorizarUsuarios([3]), ...validateId], 
     controller.borrar.bind(controller)
 );
 
 export { router };
-
 
