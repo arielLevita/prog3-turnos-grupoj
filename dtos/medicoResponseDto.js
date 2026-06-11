@@ -10,5 +10,6 @@ export default class MedicoResponseDto {
         this.email = dbRow.email;
         this.idEspecialidad = dbRow.id_especialidad;
         this.especialidadNombre = dbRow.especialidad_nombre;
+        this.obrasSociales = dbRow.obrasSociales || [];
     }
 }

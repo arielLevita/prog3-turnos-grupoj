@@ -5,6 +5,7 @@ import UsuariosControlador from '../../controladores/usuariosControlador.js';
 import UsuarioCreateDto from '../../dtos/usuarioCreateDto.js';
 import validarCampos from '../../middlewares/validarCampos.js';
 import autorizarUsuarios from '../../middlewares/autorizarUsuarios.js';
+import { upload } from '../../config/multer.js';
 
 const cache = apicache.middleware;
 const controller = new UsuariosControlador();
@@ -61,6 +62,9 @@ const findAllTransformarQueryParams = (req, res, next) => {
 };
 
 const transformDTO = (req, res, next) => {
+    if (req.file) {
+        req.body.fotoPath = req.file.filename;
+    }
     req.dto = new UsuarioCreateDto(req.body);
     next();
 };
@@ -81,7 +85,10 @@ router.post("/",
 );
 
 router.put("/:id_usuario", 
-    [autorizarUsuarios([3]), ...validarId, ...validarPayload, transformDTO], 
+    autorizarUsuarios([3]),
+    upload.single('foto'),
+    [...validarId, ...validarPayload], 
+    transformDTO,
     controller.modificar.bind(controller)
 );
 

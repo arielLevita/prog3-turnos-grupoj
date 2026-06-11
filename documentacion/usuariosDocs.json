@@ -49,6 +49,42 @@
                     "rol": 2
                 }
             },
+            "UsuarioUpdateInput": {
+                "type": "object",
+                "properties": {
+                    "documento": {
+                        "type": "string",
+                        "maxLength": 20
+                    },
+                    "apellido": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "nombres": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 255
+                    },
+                    "contrasenia": {
+                        "type": "string",
+                        "minLength": 6
+                    },
+                    "rol": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 3
+                    },
+                    "foto": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Archivo de imagen de perfil"
+                    }
+                }
+            },
             "UsuarioResponse": {
                 "type": "object",
                 "properties": {
@@ -189,9 +225,9 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/UsuarioInput"
+                                "$ref": "#/components/schemas/UsuarioUpdateInput"
                             }
                         }
                     }
