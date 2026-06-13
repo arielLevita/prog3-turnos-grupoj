@@ -2,7 +2,7 @@ import express from 'express';
 import { query, param, body } from "express-validator";
 import apicache from "apicache";
 import PacientesControlador from '../../controladores/pacientesControlador.js';
-import PacienteCreateDto from '../../dtos/pacienteCreateDTO.js';
+import PacienteCreateDto from '../../dtos/pacienteCreateDto.js';
 import validarCampos from '../../middlewares/validarCampos.js'; 
 import autorizarUsuarios from '../../middlewares/autorizarUsuarios.js';
 
