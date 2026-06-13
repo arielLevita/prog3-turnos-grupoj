@@ -10,6 +10,8 @@ import { router as v2PacientesRutas } from "./v2/pacientesRutas.js";
 import { router as v2TurnosRutas } from "./v2/turnosRutas.js";
 import { router as v2MedicosRutas } from "./v2/medicosRutas.js";
 import { router as v2AuthRutas } from "./v2/authRutas.js";
+import { router as v2EstadisticasRutas } from "./v2/estadisticasRutas.js";
+import autorizarUsuarios from "../middlewares/autorizarUsuarios.js";
 import { router as v2PublicRutas } from "./v2/publicRutas.js";
 
 import { router as turnosWebRutas } from "./web/turnosWebRutas.js";
@@ -35,6 +37,7 @@ router.use('/api/v2/medicos', verificarToken, v2MedicosRutas);
 router.use('/api/v2/turnos', verificarToken, v2TurnosRutas);
 router.use('/api/v2/pacientes', verificarToken, v2PacientesRutas);
 router.use('/api/v2/obras-sociales', verificarToken, v2ObrasSocialesRutas);
+router.use("/api/v2/estadisticas",verificarToken,autorizarUsuarios([3]),v2EstadisticasRutas,);
 
 router.use('/web/turnos', turnosWebRutas);
 router.use('/web/medicos', medicosWebRutas);
