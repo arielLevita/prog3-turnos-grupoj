@@ -1,6 +1,6 @@
 import express from 'express';
-import passport from 'passport';
 
+import { autenticarJWT } from '../middlewares/autenticarJWT.js';
 import { router as v1EspecialidadesRutas } from "./v1/especialidadesRutas.js";
 
 import { router as v2EspecialidadesRutas } from "./v2/especialidadesRutas.js";
@@ -12,6 +12,7 @@ import { router as v2MedicosRutas } from "./v2/medicosRutas.js";
 import { router as v2AuthRutas } from "./v2/authRutas.js";
 import { router as v2EstadisticasRutas } from "./v2/estadisticasRutas.js";
 import autorizarUsuarios from "../middlewares/autorizarUsuarios.js";
+import { router as v2PublicRutas } from "./v2/publicRutas.js";
 
 import { router as turnosWebRutas } from "./web/turnosWebRutas.js";
 import { router as medicosWebRutas } from "./web/medicosWebRutas.js";
@@ -26,8 +27,9 @@ router.get('/', (req, res) => {
 router.use('/api/v1/especialidades', v1EspecialidadesRutas);
 
 router.use('/api/v2/auth', v2AuthRutas);
+router.use('/api/v2/public', v2PublicRutas);
 
-const verificarToken = passport.authenticate('jwt', { session: false });
+const verificarToken = autenticarJWT;
 
 router.use('/api/v2/especialidades', verificarToken, v2EspecialidadesRutas);
 router.use('/api/v2/usuarios', verificarToken, v2UsuariosRutas);

@@ -8,6 +8,7 @@ export default class TurnoResponseDto {
         this.valorTotal = parseFloat(dbRow.valor_total);
         this.atendido = dbRow.atentido === 1; 
         this.medicoNombre = dbRow.medico_nombre;
+        this.especialidadNombre = dbRow.especialidad_nombre;
         this.pacienteNombre = dbRow.paciente_nombre;
         this.obraSocialNombre = dbRow.obra_social_nombre;
     }

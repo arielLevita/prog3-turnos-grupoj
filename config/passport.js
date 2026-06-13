@@ -2,7 +2,6 @@ import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalSrategy } from "passport-local";
 import UsuariosServicio from "../servicios/usuariosServicio.js"
 
-// Instanciamos el servicio UNA SOLA VEZ para todo el archivo (¡Excelente observación!)
 const usuariosServicio = new UsuariosServicio();
 
 const estrategia = new LocalSrategy({
@@ -25,7 +24,7 @@ const estrategia = new LocalSrategy({
 
 const validacion = new JwtStrategy({
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), 
-    secretOrKey: process.env.JWT_SECRET    
+    secretOrKey: process.env.JWT_ACCESS_SECRET    
 },
     async (jwtPayload, done) => { 
         const usuario = await usuariosServicio.buscarPorId(jwtPayload.id_usuario);

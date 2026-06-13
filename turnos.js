@@ -42,7 +42,7 @@ app.set('views', './views');
 app.use(express.static('public'));
 
 const corsOptions = {
-    origin: ['http://localhost:3000', 'http://localhost:5173'], //* Acá van las urls del Front-end.
+    origin: ['http://localhost:3000', 'http://localhost:5173'], 
     optionsSuccessStatus: 200, 
 };
 
@@ -61,5 +61,5 @@ const PUERTO = process.env.PUERTO || 3007;
 app.listen(PUERTO, () => {
     console.log(`Servidor iniciado OK en el puerto: ${PUERTO}`);
     console.log(`Documentación disponible en http://localhost:${PUERTO}/api-docs`);
-    console.log(`Vistas disponibles en http://localhost:${PUERTO}/web/turnos`); //TODO Cambiar por la vista de login
+    console.log(`Vistas disponibles en http://localhost:${PUERTO}/web/turnos`); 
 }); 

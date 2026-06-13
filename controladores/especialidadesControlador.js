@@ -38,7 +38,7 @@ export default class EspecialidadesControlador {
     }
 
     crear = async (req, res) => {
-        const especialidad = req.dto; // Usamos el DTO que ya viene limpio de la ruta
+        const especialidad = req.dto;
 
         try {
             const nuevaEspecialidad = await this.service.crear(especialidad);

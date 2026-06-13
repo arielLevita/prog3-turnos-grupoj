@@ -29,6 +29,14 @@ export default class PacientesServicio {
         return id;
     }
 
+    modificarObraSocial = async (id, idObraSocial) => {
+        const existe = await this.db.buscarPorId(id);
+        if (!existe) return null;
+
+        await this.db.modificarObraSocial(id, idObraSocial);
+        return id;
+    }
+
     borrar = async (id) => {
         const existe = await this.db.buscarPorId(id);
         if (!existe) return null;

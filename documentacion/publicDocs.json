@@ -1,0 +1,83 @@
+{
+    "components": {
+        "schemas": {
+            "MedicoPublicoResponse": {
+                "type": "object",
+                "properties": {
+                    "idMedico": {
+                        "type": "integer"
+                    },
+                    "apellido": {
+                        "type": "string"
+                    },
+                    "nombres": {
+                        "type": "string"
+                    },
+                    "idEspecialidad": {
+                        "type": "integer"
+                    },
+                    "especialidadNombre": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "idMedico": 1,
+                    "apellido": "Perez",
+                    "nombres": "Juan",
+                    "idEspecialidad": 2,
+                    "especialidadNombre": "CARDIOLOGÍA"
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/v2/public/medicos": {
+            "get": {
+                "summary": "Obtiene la lista pública de médicos (sin datos sensibles)",
+                "tags": [
+                    "Público"
+                ],
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de médicos obtenida con éxito.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/MedicoPublicoResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/public/especialidades": {
+            "get": {
+                "summary": "Obtiene la lista pública de especialidades",
+                "tags": [
+                    "Público"
+                ],
+                "security": [],
+                "responses": {
+                    "200": {
+                        "description": "Lista de especialidades obtenida con éxito.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EspecialidadResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

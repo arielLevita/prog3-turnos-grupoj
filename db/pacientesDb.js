@@ -52,6 +52,12 @@ export default class PacientesDb {
         await pool.execute(strSql, [idUsuario, idObraSocial, id]);
         return id;
     }
+    modificarObraSocial = async (id, idObraSocial) => {
+        const strSql = `UPDATE pacientes SET id_obra_social = ? WHERE id_paciente = ?`;
+        await pool.execute(strSql, [idObraSocial, id]);
+        return id;
+    }
+
     borrar = async (id) => {
         const strSql = `UPDATE usuarios 
                         SET activo = 0 
