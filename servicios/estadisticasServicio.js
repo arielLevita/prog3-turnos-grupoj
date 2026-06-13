@@ -7,6 +7,7 @@ export default class EstadisticasServicio {
     switch (reporte) {
       case "obras-sociales":
         spName = "pa_estadisticas_obras_sociales";
+        break;
       case "medicos":
         spName = "pa_estadisticas_medicos";
         break;
