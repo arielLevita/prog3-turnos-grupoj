@@ -73,7 +73,7 @@ router.patch("/:id_turno/atendido",
 );
 
 router.delete("/:id_turno", 
-    [autorizarUsuarios([3]), ...validarId], 
+    [autorizarUsuarios([2, 3]), ...validarId], 
     controller.borrar.bind(controller)
 );
 
