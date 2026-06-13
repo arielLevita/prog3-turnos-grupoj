@@ -23,16 +23,30 @@ const estrategia = new LocalSrategy({
 )
 
 const validacion = new JwtStrategy({
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), 
-    secretOrKey: process.env.JWT_ACCESS_SECRET    
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_ACCESS_SECRET
 },
-    async (jwtPayload, done) => { 
-        const usuario = await usuariosServicio.buscarPorId(jwtPayload.id_usuario);
-        if(!usuario){
-            return done(null, false, { mensaje: 'Token incorrecto!'});
-        }
+    async (jwtPayload, done) => {
+        try {
+            const idSeguro = jwtPayload.id_usuario || jwtPayload.idUsuario;
 
-        return done(null, usuario);
-    }    
+            if (!idSeguro) {
+                console.error("Alerta de seguridad: Token recibido sin ID de usuario");
+                return done(null, false, { mensaje: 'Token corrupto o inválido!' });
+            }
+
+            const usuario = await usuariosServicio.buscarPorId(idSeguro);
+            
+            if (!usuario) {
+                return done(null, false, { mensaje: 'Usuario no encontrado!' });
+            }
+
+            return done(null, usuario);
+        } catch (error) {
+            console.error("Error en validación JWT:", error);
+            return done(error, false);
+        }
+    }
 )
+
 export { estrategia, validacion };
