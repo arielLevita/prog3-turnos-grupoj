@@ -48,9 +48,9 @@ graph TD
 
 ---
 
-## 📊 Inteligencia de Negocios (El Diferencial)
+## 📊 Modulo estadísticas
 
-No solo transaccionamos datos, **creamos valor operativo**. Nuestro módulo de estadísticas delega el cómputo matemático intensivo directamente al motor relacional:
+Se delega el cómputo matemático intensivo directamente al motor de BD:
 
 > **Procedimiento Almacenado `pa_estadisticas`:** Libera el *Event Loop* de Node.js al ejecutar funciones de agregación (`SUM`, `COUNT`, `GROUP BY`) directamente en MySQL, optimizando el ancho de banda y garantizando reportes de métricas en milisegundos sin afectar la atención de pacientes.
 
@@ -84,7 +84,7 @@ No solo transaccionamos datos, **creamos valor operativo**. Nuestro módulo de e
 
 ---
 
-## 👨‍💻 Equipo de Ingeniería (Grupo J)
+## 👨‍💻 Equipo de Desarrollo (Grupo J)
 
 <div align="center">
 
