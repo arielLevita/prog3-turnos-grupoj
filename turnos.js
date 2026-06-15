@@ -14,6 +14,8 @@ import indexRutas from './rutas/indexRutas.js';
 import passport from "passport";
 import { estrategia, validacion } from "./config/passport.js";
 
+import { router as estadisticasRutas } from "./rutas/v2/estadisticasRutas.js";
+
 
 const app = express();
 
@@ -50,7 +52,9 @@ app.use(helmet());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+
 app.use('/', indexRutas);
+
 
 const PUERTO = process.env.PUERTO || 3007;
 

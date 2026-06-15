@@ -11,7 +11,7 @@ export default class AuthServicio {
     generarAccessToken(usuario) {
         return jwt.sign(
             {
-                id_usuario: usuario.idUsuario || usuario.id_usuario, 
+                id_usuario: usuario.idUsuario || usuario.id_usuario,
                 nombre_usuario: usuario.nombreUsuario || usuario.email
             },
             process.env.JWT_ACCESS_SECRET,
@@ -37,14 +37,21 @@ export default class AuthServicio {
 
         try {
             const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-            const usuarioDb = await this.usuariosServicio.buscarPorId(decoded.id_usuario);
+            const idUsuario = decoded.id_usuario || decoded.idUsuario;
+
+            if (!idUsuario) {
+                throw new Error('El token decodificado no contiene un ID de usuario válido');
+            }
+
+            const usuarioDb = await this.usuariosServicio.buscarPorId(idUsuario);
 
             if (!usuarioDb) {
                 throw new Error('Usuario no encontrado');
             }
 
-            const usuarioMapped = new UsuarioResponseDto(usuarioDb);
-            const newAccessToken = this.generarAccessToken(usuarioMapped);
+            // const usuarioMapped = new UsuarioResponseDto(usuarioDb);
+            // const newAccessToken = this.generarAccessToken(usuarioMapped);
+            const newAccessToken = this.generarAccessToken(usuarioDb);
 
             return {
                 accessToken: newAccessToken
