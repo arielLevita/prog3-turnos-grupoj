@@ -1,6 +1,8 @@
-# 🏥 Sistema de Gestión de Turnos Médicos
-
 <div align="center">
+
+# 🏥 Sistema de Gestión de Turnos Médicos
+## Trabajo Final Integrador de Programación III - UNER - FCAD - TUDW
+
 <img src="https://capsule-render.vercel.app/api?type=waving&color=005C84&height=120&section=header&text=GRUPO%20J&fontSize=30&fontColor=ffffff" width="100%" />
 
 [![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](#)
@@ -8,48 +10,91 @@
 [![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)](#)
 [![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)](#)
 
-*API RESTful robusta, modular y segura, diseñada para optimizar los procesos operativos y analíticos de una institución de salud.*
+*Una API RESTful robusta, modular y segura, diseñada para optimizar los procesos operativos y el análisis de datos de instituciones de salud.*
 
 </div>
 
 ---
 
-## 🏛️ Información Institucional
+## 🏛️ Información 
 * **Universidad:** Universidad Nacional de Entre Ríos (UNER)
 * **Facultad:** Facultad de Ciencias de la Administración (FCAD)
 * **Carrera:** Tecnicatura Universitaria en Desarrollo Web (TUDW)
 * **Cátedra:** Programación III
-* **Año:** 2026
 
 ---
 
-## 🏗️ Arquitectura de la Aplicación
+## 🏗️ Arquitectura del Sistema
 
-El backend de este proyecto fue construido bajo un patrón estricto de **Diseño en Capas (Separation of Concerns)**, garantizando que cada componente tenga una única responsabilidad clara:
+Implementamos una arquitectura estricta basada en el patrón de **Separation of Concerns (Capas)** para garantizar escalabilidad y un código limpio.
 
-* **Capa de Rutas (`rutas/`):** Define los endpoints expuestos de la API y mapea los verbos HTTP correspondientes (GET, POST, PUT, DELETE).
-* **Capa de Middlewares (`middlewares/`):** Actúa como el escudo del sistema. Maneja la autenticación *stateless* por **JWT** y ejecuta el saneamiento de datos entrantes mediante `express-validator`.
-* **Capa de Controladores (`controladores/`):** Orquesta el ciclo de vida de la petición HTTP (`req`, `res`). Administra el asincronismo (`async/await`) y maneja de forma segura las excepciones mediante bloques `try/catch`.
-* **Capa de Servicios (`servicios/`):** Aloja las reglas operativas y de negocio puras del sistema, manteniéndose totalmente agnóstica de los protocolos de red.
-* **Capa de Persistencia (`db/`):** Gestiona el acceso de bajo nivel a los datos a través de un pool optimizado de conexiones a MySQL.
+```mermaid
+graph TD
+    Client([📱 Cliente / Postman]) -.->|HTTP Request| Rutas
+    
+    subgraph 🛡️ Capa de Red y Seguridad
+        Rutas[Rutas de Express] --> Middlewares
+        Middlewares[Passport JWT & Express-Validator] --> Controladores
+    end
+    
+    subgraph 🧠 Capa de Negocio
+        Controladores[Controladores] --> Servicios
+        Servicios[Servicios de Negocio]
+    end
+    
+    subgraph 💾 Capa de Persistencia
+        Servicios --> DAOs[Data Access / BD]
+        DAOs -.->|Pool de Conexiones| MySQL[(MySQL DB)]
+    end
+
+    classDef blue fill:#005C84,stroke:#fff,stroke-width:2px,color:#fff;
+    class MySQL blue;
+```
 
 ---
 
-## 📊 Módulo Analítico y Rendimiento (BI)
+## 📊 Módulo estadísticas 
 
-Para el cálculo de métricas e inteligencia de negocios, el sistema evita sobrecargar el hilo único de Node.js. 
+No solo transaccionamos datos, **creamos valor operativo**. Nuestro módulo de estadísticas delega el cómputo matemático intensivo directamente al motor relacional:
 
-> **Optimización SQL:** Delegamos el cómputo matemático pesado (`COUNT`, `SUM(IF)`) directamente al motor relacional mediante el procedimiento almacenado **`pa_estadisticas.sql`**, reduciendo drásticamente el uso de memoria RAM en el servidor de aplicaciones y garantizando respuestas en milisegundos.
+> **Procedimiento Almacenado `pa_estadisticas`:** > Libera el *Event Loop* de Node.js al ejecutar funciones de agregación (`SUM`, `COUNT`, `GROUP BY`) directamente en MySQL, optimizando el ancho de banda y garantizando reportes de métricas en milisegundos sin afectar la atención de pacientes.
 
 ---
 
-## ⚙️ Configuración y Despliegue Local
+## ⚡ Guía Rápida de Instalación
 
 <details>
-<summary><b>Haz clic aquí para ver los pasos de instalación</b></summary>
+<summary><b>Haz clic para expandir las instrucciones de despliegue local</b></summary>
 
-1. **Clonar el repositorio y acceder a la rama de desarrollo:**
+1. **Clona el repositorio:**
    ```bash
    git clone [https://github.com/arielLevita/prog3-turnos-grupoj.git](https://github.com/arielLevita/prog3-turnos-grupoj.git)
    cd prog3-turnos-grupoj
    git checkout develop
+   ```
+2. **Instala las dependencias:**
+   ```bash
+   npm install
+   ```
+3. **Variables de Entorno:**
+   Copia el archivo `.env.ejemplo`, renómbralo a `.env` y ajusta tus credenciales. *(Recomendación de seguridad: No uses el usuario root)*.
+4. **Base de Datos:**
+   Importa los scripts de la carpeta `db/procedimientos` en tu servidor MySQL.
+5. **Ejecuta la API:**
+   ```bash
+   npm run dev
+   ```
+
+</details>
+
+---
+
+## 👨‍💻 Equipo de Trabajo (Grupo J)
+
+<div align="center">
+
+| <a href="https://github.com/wox9000"><img src="https://github.com/wox9000.png" width="80px;" alt=""/><br /><sub><b>Walter Cuesta</b></sub></a> | <a href="https://github.com/arielLevita"><img src="https://github.com/arielLevita.png" width="80px;" alt=""/><br /><sub><b>Ariel Levita</b></sub></a> | <a href="https://github.com/Elisa-Beltramone"><img src="https://github.com/Elisa-Beltramone.png" width="80px;" alt=""/><br /><sub><b>Elisa Beltramone</b></sub></a> |
+| :---: | :---: | :---: |
+| <a href="https://github.com/GabrielORoman"><img src="https://github.com/GabrielORoman.png" width="80px;" alt=""/><br /><sub><b>Gabriel Roman</b></sub></a> | <a href="https://github.com/MaryOlivares"><img src="https://github.com/MaryOlivares.png" width="80px;" alt=""/><br /><sub><b>María Olivares</b></sub></a> | <a href="https://github.com/NerinaBonnin"><img src="https://github.com/NerinaBonnin.png" width="80px;" alt=""/><br /><sub><b>Nerina Bonnin</b></sub></a> |
+
+</div>
