@@ -60,7 +60,7 @@ const transformDTO = (req, res, next) => {
 };
 
 router.get("/", 
-    [autorizarUsuarios([2, 3]), validateQueryParams, findAllTransformarQueryParams], 
+    [autorizarUsuarios([1, 2, 3]), validateQueryParams, findAllTransformarQueryParams], 
     controller.buscarTodas.bind(controller)
 );
 
