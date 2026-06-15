@@ -9,7 +9,7 @@
 [![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)](#)
 [![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)](#)
 
-*Una API RESTful robusta, modular y segura, diseñada para optimizar los procesos operativos y el análisis de datos de instituciones de salud.*
+*API REST.*
 
 </div>
 
