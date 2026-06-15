@@ -1,5 +1,8 @@
 import UsuariosDb from '../db/usuariosDb.js';
 import UsuarioResponseDto from '../dtos/usuarioResponseDto.js';
+import PacientesDb from '../db/pacientesDb.js'; 
+
+const pacientesDb = new PacientesDb();
 
 export default class UsuariosServicio {
     constructor() {
@@ -22,7 +25,18 @@ export default class UsuariosServicio {
     }
 
     crear = async (usuarioCreateDto) => {
-        return await this.db.crear(usuarioCreateDto);
+        const insertId = await this.db.crear(usuarioCreateDto);
+
+        if (usuarioCreateDto.rol === 2) {
+            const payloadPaciente = {
+                idUsuario: insertId,
+                idObraSocial: usuarioCreateDto.idObraSocial
+            };
+            
+            await pacientesDb.crear(payloadPaciente);
+        }
+
+        return insertId;
     }
 
     modificar = async (id, usuarioCreateDto) => {

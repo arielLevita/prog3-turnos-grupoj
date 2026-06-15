@@ -6,6 +6,7 @@ export default class MedicoPublicoResponseDto {
         this.nombres = data.nombres;
         this.idEspecialidad = data.idEspecialidad || data.id_especialidad;
         this.especialidadNombre = data.especialidadNombre || data.especialidad_nombre;
+        this.fotoPath = data.fotoPath || data.foto_path;
 
     }
 }

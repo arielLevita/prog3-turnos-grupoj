@@ -3,7 +3,7 @@ import pool from "./conexion.js";
 export default class MedicosDb {
     
     buscarTodas = async (filters = null, limit = 0, offset = 0, order = null) => {
-        let strSql = `SELECT v.id_medico, v.id_usuario, v.apellido, v.nombres, v.email,
+        let strSql = `SELECT v.id_medico, v.id_usuario, v.apellido, v.nombres, v.email, v.foto_path,
                              m.matricula, m.descripcion, m.valor_consulta,
                              m.id_especialidad, e.nombre as especialidad_nombre
                       FROM v_medicos v
@@ -42,7 +42,7 @@ export default class MedicosDb {
     }
 
     buscarPorId = async (id) => {
-        const strSql = `SELECT v.id_medico, v.id_usuario, v.apellido, v.nombres, v.email,
+        const strSql = `SELECT v.id_medico, v.id_usuario, v.apellido, v.nombres, v.email, v.foto_path,
                                m.matricula, m.descripcion, m.valor_consulta,
                                m.id_especialidad, e.nombre as especialidad_nombre
                         FROM v_medicos v
