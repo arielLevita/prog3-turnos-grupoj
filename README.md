@@ -1,7 +1,6 @@
 <div align="center">
 
 # 🏥 Sistema de Gestión de Turnos Médicos
-## Trabajo Final Integrador de Programación III - UNER - FCAD - TUDW
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=005C84&height=120&section=header&text=GRUPO%20J&fontSize=30&fontColor=ffffff" width="100%" />
 
@@ -16,7 +15,7 @@
 
 ---
 
-## 🏛️ Información 
+## 🏛️ Información Institucional
 * **Universidad:** Universidad Nacional de Entre Ríos (UNER)
 * **Facultad:** Facultad de Ciencias de la Administración (FCAD)
 * **Carrera:** Tecnicatura Universitaria en Desarrollo Web (TUDW)
@@ -30,34 +29,30 @@ Implementamos una arquitectura estricta basada en el patrón de **Separation of 
 
 ```mermaid
 graph TD
-    Client([📱 Cliente / Postman]) -.->|HTTP Request| Rutas
+    Cliente([📱 Cliente / Postman]) --> Rutas
     
-    subgraph 🛡️ Capa de Red y Seguridad
-        Rutas[Rutas de Express] --> Middlewares
-        Middlewares[Passport JWT & Express-Validator] --> Controladores
+    subgraph CapaRed [🛡️ Capa de Red y Seguridad]
+        Rutas[Rutas de Express] --> Middlewares[Middlewares JWT]
+        Middlewares --> Controladores[Controladores]
     end
     
-    subgraph 🧠 Capa de Negocio
-        Controladores[Controladores] --> Servicios
-        Servicios[Servicios de Negocio]
+    subgraph CapaNegocio [🧠 Capa de Negocio]
+        Controladores --> Servicios[Servicios de Negocio]
     end
     
-    subgraph 💾 Capa de Persistencia
-        Servicios --> DAOs[Data Access / BD]
-        DAOs -.->|Pool de Conexiones| MySQL[(MySQL DB)]
+    subgraph CapaPersistencia [💾 Capa de Persistencia]
+        Servicios --> DAOs[Acceso a Datos]
+        DAOs --> MySQL[(MySQL DB)]
     end
-
-    classDef blue fill:#005C84,stroke:#fff,stroke-width:2px,color:#fff;
-    class MySQL blue;
 ```
 
 ---
 
-## 📊 Módulo estadísticas 
+## 📊 Inteligencia de Negocios (El Diferencial)
 
 No solo transaccionamos datos, **creamos valor operativo**. Nuestro módulo de estadísticas delega el cómputo matemático intensivo directamente al motor relacional:
 
-> **Procedimiento Almacenado `pa_estadisticas`:** > Libera el *Event Loop* de Node.js al ejecutar funciones de agregación (`SUM`, `COUNT`, `GROUP BY`) directamente en MySQL, optimizando el ancho de banda y garantizando reportes de métricas en milisegundos sin afectar la atención de pacientes.
+> **Procedimiento Almacenado `pa_estadisticas`:** Libera el *Event Loop* de Node.js al ejecutar funciones de agregación (`SUM`, `COUNT`, `GROUP BY`) directamente en MySQL, optimizando el ancho de banda y garantizando reportes de métricas en milisegundos sin afectar la atención de pacientes.
 
 ---
 
@@ -89,7 +84,7 @@ No solo transaccionamos datos, **creamos valor operativo**. Nuestro módulo de e
 
 ---
 
-## 👨‍💻 Equipo de Trabajo (Grupo J)
+## 👨‍💻 Equipo de Ingeniería (Grupo J)
 
 <div align="center">
 
