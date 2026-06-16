@@ -75,9 +75,6 @@ export default class MedicosDb {
         return rows;
     }
 
-
-
-
     buscarAsociacionesPorMedico = async (id_medico) => {
         const strSql = `SELECT id_obra_social 
                         FROM medicos_obras_sociales 
@@ -114,8 +111,6 @@ export default class MedicosDb {
 
             throw error; 
         } finally {
-
-
             conexion.release();
         }
     }
