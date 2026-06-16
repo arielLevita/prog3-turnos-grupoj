@@ -1,6 +1,11 @@
 import pool from "../db/conexion.js";
+import InformesServicio from "./informesServicio.js";
 
 export default class EstadisticasServicio {
+  constructor() {
+    this.informes = new InformesServicio();
+  }
+
   obtenerEstadisticas = async (reporte, params) => {
     let paNombre = "";
 
@@ -20,5 +25,25 @@ export default class EstadisticasServicio {
 
     const [resultados] = await pool.query(`CALL ${paNombre}(?, ?)`, params);
     return resultados[0];
+  };
+
+  obtenerEstadisticasPdf = async (reporte, params) => {
+    const datos = await this.obtenerEstadisticas(reporte, params);
+    
+    const titulos = {
+      "obras-sociales": "Obras Sociales",
+      "medicos": "Médicos",
+      "especialidades": "Especialidades"
+    };
+    
+    const pdf = await this.informes.generarReportePdf(datos, titulos[reporte]);
+    
+    return {
+        buffer: pdf, 
+        headers: {
+            'Content-Type': 'application/pdf', 
+            'Content-Disposition': `inline; filename="estadisticas_${reporte}.pdf"`
+        }
+    };
   };
 }

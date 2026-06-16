@@ -29,6 +29,13 @@
             "in": "query",
             "required": true,
             "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "formato",
+            "in": "query",
+            "required": false,
+            "description": "Escribe 'pdf' para descargar un archivo PDF, o dejalo vacío para ver el JSON.",
+            "schema": { "type": "string" }
           }
         ],
         "responses": { "200": { "description": "Éxito" } }
@@ -50,6 +57,13 @@
             "in": "query",
             "required": true,
             "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "formato",
+            "in": "query",
+            "required": false,
+            "description": "Escribe 'pdf' para descargar un archivo PDF, o dejalo vacío para ver el JSON.",
+            "schema": { "type": "string" }
           }
         ],
         "responses": { "200": { "description": "Éxito" } }
@@ -71,6 +85,13 @@
             "in": "query",
             "required": true,
             "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "formato",
+            "in": "query",
+            "required": false,
+            "description": "Escribe 'pdf' para descargar un archivo PDF, o dejalo vacío para ver el JSON.",
+            "schema": { "type": "string" }
           }
         ],
         "responses": { "200": { "description": "Éxito" } }

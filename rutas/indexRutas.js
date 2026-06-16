@@ -13,9 +13,7 @@ import { router as v2AuthRutas } from "./v2/authRutas.js";
 import { router as v2EstadisticasRutas } from "./v2/estadisticasRutas.js";
 import { router as v2PublicRutas } from "./v2/publicRutas.js";
 
-import { router as turnosWebRutas } from "./web/turnosWebRutas.js";
-import { router as medicosWebRutas } from "./web/medicosWebRutas.js";
-import { router as pacientesWebRutas } from "./web/pacientesWebRutas.js";
+
 
 const router = express.Router();
 
@@ -38,8 +36,6 @@ router.use("/api/v2/pacientes", verificarToken, v2PacientesRutas);
 router.use("/api/v2/obras-sociales", verificarToken, v2ObrasSocialesRutas);
 router.use("/api/v2/estadisticas", verificarToken, v2EstadisticasRutas);
 
-router.use("/web/turnos", turnosWebRutas);
-router.use("/web/medicos", medicosWebRutas);
-router.use("/web/pacientes", pacientesWebRutas);
+
 
 export default router;

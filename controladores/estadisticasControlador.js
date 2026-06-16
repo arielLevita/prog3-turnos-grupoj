@@ -8,7 +8,17 @@ export default class EstadisticasControlador {
   obtenerReporte = async (req, res) => {
     try {
       const { tipo } = req.params;
-      const { fecha_desde, fecha_hasta } = req.query;
+      const { fecha_desde, fecha_hasta, formato } = req.query;
+
+      if (formato === 'pdf') {
+        const respuestaPdf = await this.estadisticas.obtenerEstadisticasPdf(tipo, [
+          fecha_desde,
+          fecha_hasta,
+        ]);
+        
+        res.set(respuestaPdf.headers);
+        return res.status(200).send(respuestaPdf.buffer);
+      }
 
       const datos = await this.estadisticas.obtenerEstadisticas(tipo, [
         fecha_desde,

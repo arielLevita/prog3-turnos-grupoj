@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Estadístico</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: right;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Reporte de {{titulo}}</h1>
+
+    <table>
+        <thead>
+            <tr>
+                {{#if estadisticas.[0].especialidad}}
+                <th>Especialidad</th>
+                {{/if}}
+                {{#if estadisticas.[0].obra_social}}
+                <th>Obra Social</th>
+                {{/if}}
+                {{#if estadisticas.[0].medico}}
+                <th>Médico</th>
+                {{/if}}
+                
+                <th>Total Turnos</th>
+                <th>Atendidos</th>
+                <th>Ausentes</th>
+                <th>Pacientes Únicos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each estadisticas}}
+            <tr>
+                {{#if this.especialidad}}
+                <td>{{this.especialidad}}</td>
+                {{/if}}
+                {{#if this.obra_social}}
+                <td>{{this.obra_social}}</td>
+                {{/if}}
+                {{#if this.medico}}
+                <td>{{this.medico}}</td>
+                {{/if}}
+                
+                <td>{{this.total_turnos}}</td>
+                <td>{{this.turnos_atendidos}}</td>
+                <td>{{this.turnos_ausentes}}</td>
+                <td>{{this.pacientes_atendidos}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        Generado automáticamente por el Sistema de Turnos.
+    </div>
+
+</body>
+</html>
