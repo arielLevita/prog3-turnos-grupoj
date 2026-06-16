@@ -1,2 +1,16 @@
 node_modules/
 .env
+Programacion/
+scripts_bd/
+tests/
+# Bruno API Client
+bruno/
+
+# Logs
+*.log
+accesos.log
+
+# 
+machete_estadisticas.md
+# Uploads
+public/uploads/

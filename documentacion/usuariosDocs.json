@@ -1,0 +1,271 @@
+{
+    "components": {
+        "schemas": {
+            "UsuarioInput": {
+                "type": "object",
+                "required": [
+                    "documento",
+                    "apellido",
+                    "nombres",
+                    "email",
+                    "contrasenia"
+                ],
+                "properties": {
+                    "documento": {
+                        "type": "string",
+                        "maxLength": 20
+                    },
+                    "apellido": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "nombres": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 255
+                    },
+                    "contrasenia": {
+                        "type": "string",
+                        "minLength": 6,
+                        "description": "Contraseña en texto plano. Se procesará y hasheará en el servidor. No es visible en las respuestas."
+                    },
+                    "rol": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 3,
+                        "description": "1 = Médico, 2 = Paciente, 3 = Admin"
+                    }
+                },
+                "example": {
+                    "documento": "33444555",
+                    "apellido": "Perez",
+                    "nombres": "Juan",
+                    "email": "juanperez@correo.com",
+                    "contrasenia": "micontraseña123",
+                    "rol": 2
+                }
+            },
+            "UsuarioUpdateInput": {
+                "type": "object",
+                "properties": {
+                    "documento": {
+                        "type": "string",
+                        "maxLength": 20
+                    },
+                    "apellido": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "nombres": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 255
+                    },
+                    "contrasenia": {
+                        "type": "string",
+                        "minLength": 6
+                    },
+                    "rol": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 3
+                    },
+                    "foto": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Archivo de imagen de perfil"
+                    }
+                }
+            },
+            "UsuarioResponse": {
+                "type": "object",
+                "properties": {
+                    "idUsuario": {
+                        "type": "integer",
+                        "description": "Identificador único autogenerado en el sistema."
+                    },
+                    "documento": {
+                        "type": "string"
+                    },
+                    "apellido": {
+                        "type": "string"
+                    },
+                    "nombres": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "fotoPath": {
+                        "type": "string",
+                        "description": "Ruta de almacenamiento de la imagen de perfil."
+                    },
+                    "rol": {
+                        "type": "integer",
+                        "description": "Código del rol asignado (1=Médico, 2=Paciente, 3=Admin)."
+                    }
+                },
+                "example": {
+                    "idUsuario": 1,
+                    "documento": "33444555",
+                    "apellido": "Perez",
+                    "nombres": "Juan",
+                    "email": "juanperez@correo.com",
+                    "fotoPath": "",
+                    "rol": 2
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/v2/usuarios": {
+            "get": {
+                "summary": "Obtiene la lista completa de usuarios",
+                "tags": [
+                    "Usuarios"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de usuarios devuelta de forma segura.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UsuarioResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Registra un nuevo usuario en el sistema",
+                "tags": [
+                    "Usuarios"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UsuarioInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario registrado y creado con éxito.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/usuarios/{id_usuario}": {
+            "get": {
+                "summary": "Obtiene un usuario específico por su ID",
+                "tags": [
+                    "Usuarios"
+                ],
+                "parameters": [
+                    {
+                        "name": "id_usuario",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario localizado con éxito.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Actualiza las propiedades de un usuario existente",
+                "tags": [
+                    "Usuarios"
+                ],
+                "parameters": [
+                    {
+                        "name": "id_usuario",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UsuarioUpdateInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario actualizado correctamente.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Borrado lógico de un usuario",
+                "tags": [
+                    "Usuarios"
+                ],
+                "parameters": [
+                    {
+                        "name": "id_usuario",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Eliminado con éxito"
+                    }
+                }
+            }
+        }
+    }
+}

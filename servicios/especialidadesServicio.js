@@ -1,27 +1,66 @@
-import Especialidades from "../db/especialidadesDb.js";
+import EspecialidadesDb from "../db/especialidadesDb.js";
+import EspecialidadResponseDto from "../dtos/especialidadResponseDto.js";
+import apicache from "apicache"
 
 export default class EspecialidadesServicio {
+    static KEYS_MAP = {
+        idEspecialidad: 'id_especialidad',
+        nombre: 'nombre'
+    };
+
+    static mapKeysToColumns = (obj) => {
+        if (obj === undefined || obj === null || Object.keys(obj).length === 0) return null;
+        
+        return Object.entries(obj).reduce((acc, [key, value]) => {
+            const column = EspecialidadesServicio.KEYS_MAP[key];
+            if (column) acc[column] = value;
+            return acc;
+        }, {});
+    };
+
     constructor() {
-        this.especialidades = new Especialidades();
+        this.especialidadesDb = new EspecialidadesDb();
     }
 
-    buscarTodas = async () => {
-        return await this.especialidades.buscarTodas();
+    buscarTodas = async (filter, limit, offset, order) => {
+        const sqlFilter = EspecialidadesServicio.mapKeysToColumns(filter);
+        const sqlOrder = EspecialidadesServicio.mapKeysToColumns(order);
+
+        const tableResults = await this.especialidadesDb.buscarTodas(sqlFilter, limit, offset, sqlOrder);
+        
+        return tableResults.map(row => new EspecialidadResponseDto(row));
     }
 
     buscarPorId = async (id) => {
-        return await this.especialidades.buscarPorId(id);
+        const row = await this.especialidadesDb.buscarPorId(id);
+        if (!row) return null;
+        return new EspecialidadResponseDto(row);
     }
 
-    crear = async (nombre) => {
-        return await this.especialidades.crear(nombre);
+    crear = async (especialidadDto) => {
+        const nuevo_id = await this.especialidadesDb.crear(especialidadDto);
+
+        apicache.clear()
+        return this.buscarPorId(nuevo_id);
     }
 
-    modificar = async (id, nombre) => {
-        return await this.especialidades.modificar(id, nombre);
+    modificar = async (id, especialidadDto) => {
+        const existe = await this.buscarPorId(id);
+        if (!existe) return null;
+
+        await this.especialidadesDb.modificar(id, especialidadDto);
+
+        apicache.clear()
+        return this.buscarPorId(id);
     }
 
     borrar = async (id) => {
-        return await this.especialidades.borrar(id);
+        const existe = await this.buscarPorId(id);
+        if (!existe) return null;
+
+        await this.especialidadesDb.borrar(id);
+
+        apicache.clear()
+        return id;
     }
-} 
+}

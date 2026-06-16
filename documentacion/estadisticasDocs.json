@@ -1,0 +1,101 @@
+{
+  "components": {
+    "schemas": {
+      "EstadisticaResponse": {
+        "type": "object",
+        "properties": {
+          "nombre": { "type": "string" },
+          "total_turnos": { "type": "integer" },
+          "turnos_atendidos": { "type": "integer" },
+          "turnos_ausentes": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v2/estadisticas/medicos": {
+      "get": {
+        "summary": "Obtiene estadísticas de turnos por médico",
+        "tags": ["Estadísticas"],
+        "parameters": [
+          {
+            "name": "fecha_desde",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "fecha_hasta",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "formato",
+            "in": "query",
+            "required": false,
+            "description": "Escribe 'pdf' para descargar un archivo PDF, o dejalo vacío para ver el JSON.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Éxito" } }
+      }
+    },
+    "/api/v2/estadisticas/especialidades": {
+      "get": {
+        "summary": "Obtiene estadísticas de turnos por especialidad",
+        "tags": ["Estadísticas"],
+        "parameters": [
+          {
+            "name": "fecha_desde",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "fecha_hasta",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "formato",
+            "in": "query",
+            "required": false,
+            "description": "Escribe 'pdf' para descargar un archivo PDF, o dejalo vacío para ver el JSON.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Éxito" } }
+      }
+    },
+    "/api/v2/estadisticas/obras-sociales": {
+      "get": {
+        "summary": "Obtiene estadísticas de turnos por obra social",
+        "tags": ["Estadísticas"],
+        "parameters": [
+          {
+            "name": "fecha_desde",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "fecha_hasta",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "formato",
+            "in": "query",
+            "required": false,
+            "description": "Escribe 'pdf' para descargar un archivo PDF, o dejalo vacío para ver el JSON.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Éxito" } }
+      }
+    }
+  }
+}

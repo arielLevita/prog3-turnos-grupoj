@@ -18,10 +18,23 @@
   },
   "homepage": "https://github.com/arielLevita/prog3-turnos-grupoj#readme",
   "dependencies": {
+    "apicache": "^1.6.3",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-router": "^0.0.1",
     "express-validator": "^7.3.2",
-    "mysql2": "^3.22.3"
+    "handlebars": "^4.7.9",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "multer": "^2.1.1",
+    "mysql2": "^3.22.3",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "puppeteer": "^25.1.0",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1"
   },
   "type": "module"
 }
