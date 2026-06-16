@@ -11,7 +11,6 @@ const estadisticasControlador = new EstadisticasControlador();
 router.get(
   "/:tipo",
   [
-    
     autorizarUsuarios([3]),
     param("tipo").notEmpty(),
     query("fecha_desde").isDate(),
